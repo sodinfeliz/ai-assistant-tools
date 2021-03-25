@@ -1,0 +1,15 @@
+push button color: 
+	shallow: #447BE7 (68, 123, 231)
+	dark   : #0F47B4 (15, 71, 180)
+
+ICON color (hexagon):
+	background: #4385F6 (67, 133, 246) 
+	shallow   : #407ADE (64, 122, 222)
+
+
+	background-color: #9ABAFA;
+	background-color: #F2F5FB;
+
+
+
+

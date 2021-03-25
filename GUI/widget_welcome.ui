@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>334</width>
+    <height>158</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QFrame" name="frame_welcome">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>301</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame {
+	border: 1px solid rgba(0,0,0, .12);
+	border-radius: 7px;
+	background-color: #ffffff;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>8</x>
+      <y>10</y>
+      <width>291</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QPushButton" name="pb_palm_api">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>5</y>
+       <width>91</width>
+       <height>100</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border: none;
+	background-color: transparent;
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../GUIImg/icon_palm.png</normaloff>../GUIImg/icon_palm.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>95</width>
+       <height>95</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pb_car_api">
+     <property name="geometry">
+      <rect>
+       <x>98</x>
+       <y>5</y>
+       <width>91</width>
+       <height>100</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border: none;
+	background-color: transparent; 
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../GUIImg/icon_car.png</normaloff>../GUIImg/icon_car.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>95</width>
+       <height>95</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pb_parcel_api">
+     <property name="geometry">
+      <rect>
+       <x>191</x>
+       <y>5</y>
+       <width>91</width>
+       <height>100</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border: none;
+	background-color: transparent; 
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../GUIImg/icon_crop.png</normaloff>../GUIImg/icon_crop.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>95</width>
+       <height>95</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

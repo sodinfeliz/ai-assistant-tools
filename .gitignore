@@ -1,0 +1,13 @@
+# directories ignoring
+__pycache__/
+.vscode/
+GUI/.old/
+
+# files ignoring
+*.ipynb
+GUIImg/_design.pptx
+
+
+
+
+
