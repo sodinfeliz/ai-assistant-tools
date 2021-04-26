@@ -1,8 +1,12 @@
-import gdal
 import cv2
 import numpy as np
 from pathlib import Path
 from skimage.util.shape import view_as_windows
+
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
 
 
 def resize_image(im_path: Path, pixel_size):
