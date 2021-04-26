@@ -1,0 +1,12 @@
+version: "3"
+services: 
+  gui:
+    build: .
+    stdin_open: true
+    tty: true
+    volumes: 
+      - $HOME/.Xauthority:/root/.Xauthority:rw
+    environment: 
+      - DISPLAY
+    userns_mode: "host"
+    network_mode: "host"
