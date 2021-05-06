@@ -1,11 +1,14 @@
-import gdal
 import cv2
 import numpy as np
 from numpy.core.fromnumeric import size
 
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
+
 
 def resize_image(im_path, pixel_size):
-    
     tfw = gdal.Open(str(im_path)).GetGeoTransform()
     org_im = cv2.imread(str(im_path), -1)[..., :3]
     im_shape = np.array(org_im.shape[:2])

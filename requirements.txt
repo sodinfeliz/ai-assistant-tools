@@ -1,0 +1,10 @@
+GDAL==2.3.3
+numpy
+opencv-python-headless
+pandas
+pascal_voc_writer
+progress
+PyQt5
+scikit-image
+scipy
+shapely

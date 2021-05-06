@@ -1,10 +1,14 @@
 
 
 import json
-import gdal
 import ogr
 from pathlib import Path
 from shapely.geometry.polygon import Polygon
+
+try:
+    from osgeo import gdal
+except ImportError:
+    import gdal
 
 
 def shppoly_extract(path, filter: Polygon=None):

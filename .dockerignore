@@ -1,0 +1,8 @@
+data/palm/*/
+data/parcel/*/
+data/vehicle/*/
+
+# docker building files
+Dockerfile
+docker-compose.yml
+.dockerignore
