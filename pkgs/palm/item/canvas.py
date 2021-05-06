@@ -105,6 +105,9 @@ from .circle import PosCircleItem
 
 
 class PalmPositionCanvas(PhotoViewer):
+
+    add_item_signal = pyqtSignal()
+
     def __init__(self, parent, geometry: QRect):
         super(PalmPositionCanvas, self).__init__(parent)
         self.setStyleSheet("background-color: #EDF3FF; border-radius: 7px;")
@@ -123,6 +126,7 @@ class PalmPositionCanvas(PhotoViewer):
             if len(self._palm_pos) == 0:
                 self._palm_pos = np.vstack((self._palm_pos, pos))
                 self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(pos[0], pos[1], 'red')))
+                self.add_item_signal.emit()
             else:
                 if cdist([pos], self._palm_pos).min() <= round(30*self._factor):
                     index = cdist([pos], self._palm_pos).argmin()
@@ -132,6 +136,7 @@ class PalmPositionCanvas(PhotoViewer):
                 else:
                     self._palm_pos = np.vstack((self._palm_pos, pos))
                     self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(pos[0], pos[1], 'red')))
+                    self.add_item_signal.emit()
 
 
     def add_item_to_scene(self, it):

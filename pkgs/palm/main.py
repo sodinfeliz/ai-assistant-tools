@@ -58,6 +58,7 @@ class palmGUI(QWidget):
         self.view_canvas.set_factor(self._factor)
         self.view_canvas.set_add_point_mode(False)
         self.view_canvas.clean_all_pos_items()
+        self.view_canvas.add_item_signal.connect(self._empty_display_info)
 
         self.pb_save_dataset.setEnabled(False)
         self.pb_loadcsv.setEnabled(True)
@@ -154,3 +155,7 @@ class palmGUI(QWidget):
             else:
                 warning_msg("Overlap ratio must be float type.")
         return ratio
+
+
+    def _empty_display_info(self):
+        self.info_display.setText("")
