@@ -17,6 +17,10 @@ class DeleteSignal(QObject):
 
 class RectItemHandle(QGraphicsRectItem):
 
+    defaultColor = (15, 71, 180)
+    selectedColor = (224, 24, 24)
+    minSize = None
+
     handleTopLeft = 1
     handleTopRight = 2
     handleBottomLeft = 3
@@ -49,6 +53,7 @@ class RectItemHandle(QGraphicsRectItem):
         self.creating = False
         self.item_changed_signal = ChangeSignal()
         self.item_delete_signal = DeleteSignal()
+        self.color = self.defaultColor
 
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
@@ -132,6 +137,7 @@ class RectItemHandle(QGraphicsRectItem):
             self.mousePressRect = None
             self.creating = False
             self.update()
+
         super().mouseReleaseEvent(mouseEvent)
 
 
@@ -219,6 +225,14 @@ class RectItemHandle(QGraphicsRectItem):
             boundingRect.setBottom(toB)
             self.setRect(boundingRect)
 
+        if self.__class__.minSize is not None:
+            print(boundingRect.width(), boundingRect.height())
+            if abs(boundingRect.width()) < self.__class__.minSize or \
+               abs(boundingRect.height()) < self.__class__.minSize:
+                self.switch_color('selected')
+            else:
+                self.switch_color('default')
+
         self.updateHandlesPos()
         self.item_changed_signal.emit_signal()
 
@@ -240,8 +254,8 @@ class RectItemHandle(QGraphicsRectItem):
         # (1, 254, 129)
         eSize = self.handleSize // 4
 
-        painter.setBrush(QBrush(QColor(15, 71, 180, 50)))
-        painter.setPen(QPen(QColor(15, 71, 180, 200), eSize, style=Qt.SolidLine, cap=Qt.RoundCap, join=Qt.RoundJoin))
+        painter.setBrush(QBrush(QColor(*self.color, 50)))
+        painter.setPen(QPen(QColor(*self.color, 200), eSize, style=Qt.SolidLine, cap=Qt.RoundCap, join=Qt.RoundJoin))
         painter.drawRect(self.originRect())
 
         # drawing the circle handles
@@ -258,3 +272,15 @@ class RectItemHandle(QGraphicsRectItem):
         if self.originRect().width() == 1 and self.originRect().height() == 1:
             self.creating = True
 
+
+    def switch_color(self, mode):
+        if mode == 'default':
+            self.color = self.defaultColor
+        elif mode == 'selected':
+            self.color = self.selectedColor
+        self.update()
+
+
+    @classmethod
+    def set_min_size(cls, sz):
+        cls.minSize = sz 

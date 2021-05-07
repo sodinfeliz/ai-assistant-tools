@@ -8,7 +8,10 @@ from skimage.util.shape import view_as_windows
 
 class DatasetProducing(object):
 
-    def __init__(self, im, lb, n_class: int=None, seed: int=None, alpha=0.6) -> None:
+    def __init__(self, im, lb, 
+                       n_class: int=None, 
+                       seed: int=None, 
+                       alpha=0.6):
         """ Initialization
 
         # Args:

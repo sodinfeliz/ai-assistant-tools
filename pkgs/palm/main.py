@@ -42,6 +42,8 @@ class palmGUI(QWidget):
         self.le_crop_size.setPlaceholderText('Crop Size')
         self.le_overlap_ratio.setPlaceholderText('Overlap Ratio')
 
+        self.le_crop_size.editingFinished.connect(self.crop_and_split_size_check)
+
 
     def file_open(self):
         self._im_path, _ = QFileDialog.getOpenFileName(self,
@@ -148,6 +150,25 @@ class palmGUI(QWidget):
             self.view_canvas.delete_crop_win_from_scene(it)
 
 
+    def crop_and_split_size_check(self):
+        crop_win_adjust = False
+        try:
+            crop_size = int(self.le_crop_size.text())
+            RectItemHandle.set_min_size(crop_size*self._factor)
+            for rect in self.view_canvas._crop_win:
+                win = list(map(int, rect.rect().getCoords()))
+                x1, y1, x2, y2 = (np.array(win) / self._factor).astype('int')
+                width, height = x2-x1, y2-y1
+                if width < crop_size or height < crop_size:
+                    crop_win_adjust = True
+                    rect.switch_color('selected')
+                else:
+                    rect.switch_color('default')
+        except Exception:
+            warning_msg("Crop size must be integer.")
+        return crop_win_adjust
+
+
     #######################
     ##  Dataset Related  ##
     #######################
@@ -156,18 +177,20 @@ class palmGUI(QWidget):
         """
         Producing the Pascal VOC dataset     
         """
+        windows = self.view_canvas.get_all_crop_win()
         size = self.check_split_size()
         ratio = self.check_overlap_ratio()
         if size is None or ratio is None: return
 
-        self.prob_map_produced()
-        ds = DatasetProducing(self.org_im, self.lb)
+        """
+        self.prob_map_produce()
+        ds = DatasetProducing(self.org_im, self.lb, alpha=1.3)
         ds.split(size, ratio)
         ds.save(filename=self._filename, save_dir=self._im_dir)
         self.info_display.setText("Dataset Completed !")
+        """
 
-
-    def prob_map_produced(self):
+    def prob_map_produce(self):
         """
         Probability map producing
         """
@@ -179,11 +202,14 @@ class palmGUI(QWidget):
 
     def check_split_size(self):
         """
-        Checking the size format
+        Checking the size format and crop
+        window size must greater than split size if exists.
         """
         crop_size = None
         try:
             crop_size = int(self.le_crop_size.text())
+            if self.crop_and_split_size_check():
+                warning_msg('Crop window size must greater than split size.')
         except ValueError:
             if not self.le_crop_size.text():
                 warning_msg('Crop size cell is empty.')
