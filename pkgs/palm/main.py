@@ -64,7 +64,7 @@ class palmGUI(QWidget):
         self.view_canvas.set_factor(self._factor)
         self.view_canvas.set_add_point_mode(False)
         self.view_canvas.clean_all_pos_items()
-        self.view_canvas.add_item_signal.connect(self._add_signal_handler)
+        self.view_canvas.add_item_signal.connect(self.add_signal_handler)
 
         self.pb_save_dataset.setEnabled(False)
         self.pb_loadcsv.setEnabled(True)
@@ -92,6 +92,20 @@ class palmGUI(QWidget):
                 self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))
             self.view_canvas.set_mode(func_mode[mode])
 
+
+    def add_signal_handler(self, mousePos):
+        if self.view_canvas._mode == func_mode['select']:
+            self.info_display.setText("")
+        elif self.view_canvas._mode == func_mode['crop']:
+            x, y = mousePos.x(), mousePos.y()
+            item = RectItemHandle(x, y, 1, 1, handleSize=100)
+            self.view_canvas.add_crop_win_to_scene(item)
+            item.item_delete_signal.signal.connect(self.delete_crop_win_by_signal)
+
+
+    ###########################
+    ##  Select Mode Related  ##
+    ###########################
 
     def load_position(self):
         pos_path, _ = QFileDialog.getOpenFileName(self,
@@ -124,20 +138,9 @@ class palmGUI(QWidget):
         self.le_overlap_ratio.setEnabled(True)
 
 
-    def dataset_producing(self):
-        """
-        Producing the Pascal VOC dataset     
-        """
-        size = self._check_split_size()
-        ratio = self._check_overlap_ratio()
-        if size is None or ratio is None: return
-
-        self._prob_map_produced()
-        ds = DatasetProducing(self.org_im, self.lb)
-        ds.split(size, ratio)
-        ds.save(filename=self._filename, save_dir=self._im_dir)
-        self.info_display.setText("Dataset Completed !")
-
+    #########################
+    ##  Crop Mode Related  ##
+    #########################
 
     def delete_crop_win_by_signal(self, it):
         if self.view_canvas._mode == func_mode['crop']:
@@ -145,7 +148,26 @@ class palmGUI(QWidget):
             self.view_canvas.delete_crop_win_from_scene(it)
 
 
-    def _prob_map_produced(self):
+    #######################
+    ##  Dataset Related  ##
+    #######################
+
+    def dataset_producing(self):
+        """
+        Producing the Pascal VOC dataset     
+        """
+        size = self.check_split_size()
+        ratio = self.check_overlap_ratio()
+        if size is None or ratio is None: return
+
+        self.prob_map_produced()
+        ds = DatasetProducing(self.org_im, self.lb)
+        ds.split(size, ratio)
+        ds.save(filename=self._filename, save_dir=self._im_dir)
+        self.info_display.setText("Dataset Completed !")
+
+
+    def prob_map_produced(self):
         """
         Probability map producing
         """
@@ -155,7 +177,7 @@ class palmGUI(QWidget):
             cv2.circle(self.lb, (x, y), palm_radius, (1,), -1, cv2.LINE_AA)
 
 
-    def _check_split_size(self):
+    def check_split_size(self):
         """
         Checking the size format
         """
@@ -170,7 +192,7 @@ class palmGUI(QWidget):
         return crop_size
 
     
-    def _check_overlap_ratio(self):
+    def check_overlap_ratio(self):
         """
         Checking the overlap ratio format
         """
@@ -186,13 +208,3 @@ class palmGUI(QWidget):
             else:
                 warning_msg("Overlap ratio must be float type.")
         return ratio
-
-
-    def _add_signal_handler(self, mousePos):
-        if self.view_canvas._mode == func_mode['select']:
-            self.info_display.setText("")
-        elif self.view_canvas._mode == func_mode['crop']:
-            x, y = mousePos.x(), mousePos.y()
-            item = RectItemHandle(x, y, 1, 1, handleSize=100)
-            self.view_canvas.add_crop_win_to_scene(item)
-            item.item_delete_signal.signal.connect(self.delete_crop_win_by_signal)
