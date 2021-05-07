@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1127</width>
+    <width>1237</width>
     <height>937</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1103</width>
+     <width>1154</width>
      <height>919</height>
     </rect>
    </property>
@@ -41,7 +41,7 @@
    <widget class="QGraphicsView" name="view_canvas">
     <property name="geometry">
      <rect>
-      <x>16</x>
+      <x>67</x>
       <y>51</y>
       <width>1070</width>
       <height>850</height>
@@ -274,7 +274,7 @@ QPushButton:pressed{
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>652</x>
+      <x>703</x>
       <y>9</y>
       <width>441</width>
       <height>38</height>
@@ -417,6 +417,77 @@ QPushButton:pressed {
       <string>SAVE CSV</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="pb_select_mode">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>51</y>
+      <width>44</width>
+      <height>44</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border: none;
+	border-radius: 5px;
+	background-color: #9ABAFA;
+}
+QPushButton:pressed{
+	margin: 1 1 1 1;
+	outline: 0;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../GUIImg/cursor3.png</normaloff>../GUIImg/cursor3.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>38</width>
+      <height>38</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pb_crop_mode">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>103</y>
+      <width>44</width>
+      <height>44</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border: None;
+	border-radius: 5px;
+	background-color: #F2F5FB;
+}
+QPushButton:pressed{
+	margin: 1 1 1 1;
+	outline: 0;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../GUIImg/bnbox.png</normaloff>../GUIImg/bnbox.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>25</width>
+      <height>25</height>
+     </size>
+    </property>
    </widget>
   </widget>
  </widget>

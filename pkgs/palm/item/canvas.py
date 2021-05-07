@@ -112,6 +112,7 @@ class PalmPositionCanvas(PhotoViewer):
         super(PalmPositionCanvas, self).__init__(parent)
         self.setStyleSheet("background-color: #EDF3FF; border-radius: 7px;")
         self.setGeometry(geometry)
+        self._mode = 0  # default: select mode
         self._factor = 1.
         self._add_point = False
         self._palm_pos = []
@@ -169,4 +170,8 @@ class PalmPositionCanvas(PhotoViewer):
 
     def set_add_point_mode(self, switch):
         self._add_point = switch
+
+
+    def set_mode(self, mode):
+        self._mode = mode
 

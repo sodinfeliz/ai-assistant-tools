@@ -13,10 +13,12 @@ from PyQt5.uic import loadUi
 from .dialog import warning_msg
 from .utils.imutils import resize_image
 from .item import PalmPositionCanvas, DatasetProducing
+from .style.stylesheet import connect_to_stylesheet
 
 palm_radius = 20
 pixel_size = 0.107541
 size_limitation = 20000.
+func_mode = {'select': 0, 'crop': 1}
 
 
 class palmGUI(QWidget):
@@ -33,6 +35,8 @@ class palmGUI(QWidget):
         self.pb_loadcsv.clicked.connect(self.load_position)
         self.pb_save_csv.clicked.connect(self.save_position)
         self.pb_save_dataset.clicked.connect(self.dataset_producing)
+        self.pb_select_mode.clicked.connect(lambda: self.mode_switch('select'))
+        self.pb_crop_mode.clicked.connect(lambda: self.mode_switch('crop'))
         self.le_crop_size.setPlaceholderText('Crop Size')
         self.le_overlap_ratio.setPlaceholderText('Overlap Ratio')
 
@@ -66,6 +70,25 @@ class palmGUI(QWidget):
         self.le_crop_size.setEnabled(False)
         self.le_overlap_ratio.setEnabled(False)
         self.info_display.setText('Image Loaded.')
+
+    
+    def mode_switch(self, mode):
+        """ Mode switching and changing
+         the functional push buttons' stylesheet 
+
+        # Args:
+            mode (str): must be either 'select' or 'crop'
+        """
+        assert mode in func_mode, f"Undefined mode: {mode}."
+        ssdir = 'GUI/stylesheet/palm' # stylesheet directory
+        if self.view_canvas._mode != func_mode[mode]:
+            if mode == 'select':
+                self.pb_select_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))
+                self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_unselected', ssdir))
+            else:
+                self.pb_select_mode.setStyleSheet(connect_to_stylesheet('button_unselected', ssdir))
+                self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))
+            self.view_canvas.set_mode(func_mode[mode])
 
 
     def load_position(self):
