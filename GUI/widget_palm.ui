@@ -274,9 +274,9 @@ QPushButton:pressed{
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>703</x>
+      <x>583</x>
       <y>9</y>
-      <width>441</width>
+      <width>561</width>
       <height>38</height>
      </rect>
     </property>
@@ -292,7 +292,7 @@ QPushButton:pressed{
      </property>
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>56</x>
        <y>6</y>
        <width>100</width>
        <height>24</height>
@@ -306,7 +306,7 @@ QPushButton:pressed{
      </property>
      <property name="styleSheet">
       <string notr="true">QLineEdit {
-	border: 1px solid white;
+	border: 2px solid white;
 	border-radius: 10px;
 	background-color: #F1F1F1;
 	padding-bottom: 1px;
@@ -325,7 +325,7 @@ QPushButton:pressed{
      </property>
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>164</x>
        <y>6</y>
        <width>100</width>
        <height>24</height>
@@ -339,7 +339,7 @@ QPushButton:pressed{
      </property>
      <property name="styleSheet">
       <string notr="true">QLineEdit {
-	border: 1px solid white;
+	border: 2px solid white;
 	border-radius: 10px;
 	background-color: #F1F1F1;
 	padding-bottom: 1px;
@@ -356,7 +356,7 @@ QPushButton:pressed{
     <widget class="QLabel" name="info_display">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>352</x>
        <y>6</y>
        <width>120</width>
        <height>24</height>
@@ -370,7 +370,7 @@ QPushButton:pressed{
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: #EDF3FF;
-border: 1px solid white;
+border: 2px solid white;
 border-radius: 10px;
 padding-bottom: 1px;</string>
      </property>
@@ -387,7 +387,7 @@ padding-bottom: 1px;</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>480</x>
        <y>6</y>
        <width>75</width>
        <height>24</height>
@@ -405,7 +405,7 @@ padding-bottom: 1px;</string>
       <string notr="true">QPushButton {
 	background-color: #4379E3;
 	color: #F7F9FF;
-	border: 1px solid white;
+	border: 2px solid white;
 	border-radius: 10px;
 	padding-bottom: 1px;
 }
@@ -415,6 +415,42 @@ QPushButton:pressed {
      </property>
      <property name="text">
       <string>SAVE CSV</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pb_clear_crop">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>271</x>
+       <y>6</y>
+       <width>75</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Tw Cen MT Condensed</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	background-color: #4B7CE1;
+	color: #F7F9FF;
+	border: 2px solid white;
+	border-radius: 10px;
+	padding-bottom: 1px;
+}
+QPushButton:pressed {
+	margin: 1 1 1 1;
+}</string>
+     </property>
+     <property name="text">
+      <string>CLEAR</string>
      </property>
     </widget>
    </widget>
@@ -439,7 +475,8 @@ QPushButton:pressed {
 QPushButton:pressed{
 	margin: 1 1 1 1;
 	outline: 0;
-}</string>
+}
+</string>
     </property>
     <property name="text">
      <string/>
@@ -468,12 +505,18 @@ QPushButton:pressed{
      <string notr="true">QPushButton {
 	border: None;
 	border-radius: 5px;
-	background-color: #F2F5FB;
 }
+
 QPushButton:pressed{
 	margin: 1 1 1 1;
 	outline: 0;
-}</string>
+}
+
+QPushButton:hover {
+	background-color: #EDF3FF;
+}
+
+</string>
     </property>
     <property name="text">
      <string/>

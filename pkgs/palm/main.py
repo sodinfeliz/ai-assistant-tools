@@ -12,7 +12,7 @@ from PyQt5.uic import loadUi
 
 from .dialog import warning_msg
 from .utils.imutils import resize_image
-from .item import PalmPositionCanvas, DatasetProducing
+from .item import PalmPositionCanvas, RectItemHandle, DatasetProducing
 from .style.stylesheet import connect_to_stylesheet
 
 palm_radius = 20
@@ -29,12 +29,14 @@ class palmGUI(QWidget):
         # canvas initialization
         vc_geometry = self.view_canvas.geometry()
         self.view_canvas = PalmPositionCanvas(self, vc_geometry)
+        self.view_canvas.setViewportUpdateMode(0)
         
         # push buttons setting
         self.pb_openfile.clicked.connect(self.file_open)
         self.pb_loadcsv.clicked.connect(self.load_position)
         self.pb_save_csv.clicked.connect(self.save_position)
         self.pb_save_dataset.clicked.connect(self.dataset_producing)
+        self.pb_clear_crop.clicked.connect(self.view_canvas.delete_all_crop_win)
         self.pb_select_mode.clicked.connect(lambda: self.mode_switch('select'))
         self.pb_crop_mode.clicked.connect(lambda: self.mode_switch('crop'))
         self.le_crop_size.setPlaceholderText('Crop Size')
@@ -62,7 +64,7 @@ class palmGUI(QWidget):
         self.view_canvas.set_factor(self._factor)
         self.view_canvas.set_add_point_mode(False)
         self.view_canvas.clean_all_pos_items()
-        self.view_canvas.add_item_signal.connect(self._empty_display_info)
+        self.view_canvas.add_item_signal.connect(self._add_signal_handler)
 
         self.pb_save_dataset.setEnabled(False)
         self.pb_loadcsv.setEnabled(True)
@@ -137,6 +139,12 @@ class palmGUI(QWidget):
         self.info_display.setText("Dataset Completed !")
 
 
+    def delete_crop_win_by_signal(self, it):
+        if self.view_canvas._mode == func_mode['crop']:
+            del self.view_canvas._crop_win[-1]
+            self.view_canvas.delete_crop_win_from_scene(it)
+
+
     def _prob_map_produced(self):
         """
         Probability map producing
@@ -180,5 +188,11 @@ class palmGUI(QWidget):
         return ratio
 
 
-    def _empty_display_info(self):
-        self.info_display.setText("")
+    def _add_signal_handler(self, mousePos):
+        if self.view_canvas._mode == func_mode['select']:
+            self.info_display.setText("")
+        elif self.view_canvas._mode == func_mode['crop']:
+            x, y = mousePos.x(), mousePos.y()
+            item = RectItemHandle(x, y, 1, 1, handleSize=100)
+            self.view_canvas.add_crop_win_to_scene(item)
+            item.item_delete_signal.signal.connect(self.delete_crop_win_by_signal)
