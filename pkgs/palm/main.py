@@ -15,7 +15,7 @@ from .utils.imutils import resize_image
 from .item import PalmPositionCanvas, RectItemHandle, DatasetProducing
 from .style.stylesheet import connect_to_stylesheet
 
-palm_radius = 20
+palm_radius = 2 # unit: meter
 pixel_size = 0.107541
 size_limitation = 20000.
 func_mode = {'select': 0, 'crop': 1}
@@ -113,10 +113,20 @@ class palmGUI(QWidget):
         pos_path, _ = QFileDialog.getOpenFileName(self,
             caption='Open File',
             filter="Excel (*.csv)")
-        
         if not pos_path: return  # cancel button pressed
 
-        self.view_canvas.initial_palm_pos(pos_path)
+        palm_pos = np.array(pd.read_csv(pos_path))
+
+        # convert the geopos into image positions
+        if isinstance(palm_pos[0,0], float):
+            pos_new = []
+            for x, y in palm_pos:
+                x = int((x-self._tfw[0])/pixel_size)
+                y = int((self._tfw[3]-y)/pixel_size)
+                pos_new.append([x,y])
+            palm_pos = np.array(pos_new)
+
+        self.view_canvas.initial_palm_pos(palm_pos)
         self.pb_save_csv.setEnabled(True)
         self.info_display.setText('')
 
@@ -197,7 +207,7 @@ class palmGUI(QWidget):
         self.lb = np.zeros(self.org_im.shape[:2], dtype='uint8')
         for pos in self.view_canvas._palm_pos:
             x, y = np.rint(pos / self._factor).astype('int')
-            cv2.circle(self.lb, (x, y), palm_radius, (1,), -1, cv2.LINE_AA)
+            cv2.circle(self.lb, (x, y), int(palm_radius/pixel_size), (1,), -1, cv2.LINE_AA)
 
 
     def check_split_size(self):

@@ -184,15 +184,10 @@ class PalmPositionCanvas(PhotoViewer):
         self._palm_pos_items = []
 
 
-    def initial_palm_pos(self, path):
-        try:
-            self._palm_pos = np.array(read_csv(path))
-        except:
-            self._palm_pos = np.empty([0, 2], dtype='int')
-
+    def initial_palm_pos(self, pos):
+        self._palm_pos = pos
         self._palm_pos = np.rint(self._palm_pos*self._factor).astype(self._palm_pos.dtype)
         self._add_point = True
-
         for x, y in self._palm_pos:
             self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red')))
 
