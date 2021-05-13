@@ -200,17 +200,32 @@ class PalmPositionCanvas(PhotoViewer):
         self._palm_pos_items = []
 
 
-    def initial_palm_pos(self, pos):
-        self.clean_all_pos_items()
-        self._palm_pos = pos
-        self._palm_pos = np.rint(self._palm_pos*self._factor).astype(self._palm_pos.dtype)
-        self._add_point = True
-        for x, y in self._palm_pos:
-            self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red')))
+    def palm_pos_data_loading(self, pos, mode='insert'):
+        assert mode in ['insert', 'override']
+        if mode == 'override':
+            self.clean_all_pos_items()
+            self._palm_pos = pos
+            self._palm_pos = np.rint(self._palm_pos*self._factor).astype(int)
+            for x, y in self._palm_pos:
+                self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red')))
+        elif mode == 'insert':
+            pos = np.rint(pos*self._factor).astype(int)
+            self._palm_pos = np.vstack((self._palm_pos, pos))
+            for x, y in pos:
+                self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
 
+        self._add_point = True
+        
 
     def set_add_point_mode(self, switch):
         self._add_point = switch
+
+    
+    def get_palm_pos_list(self):
+        if len(self._palm_pos):
+            return np.rint(self._palm_pos/self._factor).astype(int)
+        else:
+            return self._palm_pos
 
 
     ###############################

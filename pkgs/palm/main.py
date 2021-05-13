@@ -9,6 +9,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
+from scipy import spatial
 
 from .dialog import warning_msg
 from .utils.imutils import resize_image
@@ -108,6 +109,7 @@ class palmGUI(QWidget):
     def clean_canvas_by_click(self):
         if self.view_canvas.get_mode() == func_mode['select']:
             self.view_canvas.clean_all_pos_items()
+            self.pb_save_csv.setEnabled(False)
         elif self.view_canvas.get_mode() == func_mode['crop']:
             self.view_canvas.delete_all_crop_win()
 
@@ -133,9 +135,36 @@ class palmGUI(QWidget):
                 pos_new.append([x,y])
             palm_pos = np.array(pos_new)
 
-        self.view_canvas.initial_palm_pos(palm_pos)
+        # Merge Dialog Window - select OK will merge the positions
+        # that already in canvas with the new palm pos.
+        pos_in_canvas = self.view_canvas.get_palm_pos_list()
+        mode = 'override'
+        if len(pos_in_canvas):
+            merge_msg_box = QMessageBox()
+            merge_msg_box.setIcon(QMessageBox.Information)
+            merge_msg_box.setText(
+                "There're already position loaded, \n" +
+                "do you wanna merge the existing data \n" +
+                "with the new loaded one? (Select 'No' \n" +
+                "will override the existing data)")
+            merge_msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.No)
+            merge_msg_box.setDefaultButton(QMessageBox.Ok)
+            ret = merge_msg_box.exec_() # 1024: Ok, 65536: No
+            
+            if ret == 1024:
+                CLOSE_DISTANCE = 2 # unit: meter
+                mode = 'insert'
+                tree = spatial.cKDTree(pos_in_canvas)
+                pos_new = []
+                for x, y in palm_pos:
+                    indices = tree.query_ball_point([[x,y]], r=int(CLOSE_DISTANCE/pixel_size))
+                    if not indices:
+                        pos_new.append([x, y])
+                palm_pos = np.array(pos_new)
+
+        self.view_canvas.palm_pos_data_loading(palm_pos, mode=mode)
         self.pb_save_csv.setEnabled(True)
-        self.info_display.setText('')
+        self.info_display.setText('Position data loaded.')
 
 
     def save_position(self):
