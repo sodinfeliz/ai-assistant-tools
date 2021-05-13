@@ -36,7 +36,7 @@ class palmGUI(QWidget):
         self.pb_loadcsv.clicked.connect(self.load_position)
         self.pb_save_csv.clicked.connect(self.save_position)
         self.pb_save_dataset.clicked.connect(self.dataset_producing)
-        self.pb_clear_crop.clicked.connect(self.view_canvas.delete_all_crop_win)
+        self.pb_clear_crop.clicked.connect(self.clean_canvas_by_click)
         self.pb_select_mode.clicked.connect(lambda: self.mode_switch('select'))
         self.pb_crop_mode.clicked.connect(lambda: self.mode_switch('crop'))
         self.le_crop_size.setPlaceholderText('Crop Size')
@@ -85,7 +85,7 @@ class palmGUI(QWidget):
         """
         assert mode in func_mode, f"Undefined mode: {mode}."
         ssdir = 'GUI/stylesheet/palm' # stylesheet directory
-        if self.view_canvas._mode != func_mode[mode]:
+        if self.view_canvas.get_mode() != func_mode[mode]:
             if mode == 'select':
                 self.pb_select_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))
                 self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_unselected', ssdir))
@@ -96,13 +96,20 @@ class palmGUI(QWidget):
 
 
     def add_signal_handler(self, mousePos):
-        if self.view_canvas._mode == func_mode['select']:
+        if self.view_canvas.get_mode() == func_mode['select']:
             self.info_display.setText("")
-        elif self.view_canvas._mode == func_mode['crop']:
+        elif self.view_canvas.get_mode() == func_mode['crop']:
             x, y = mousePos.x(), mousePos.y()
             item = RectItemHandle(x, y, 1, 1, handleSize=100)
             self.view_canvas.add_crop_win_to_scene(item)
             item.item_delete_signal.signal.connect(self.delete_crop_win_by_signal)
+
+
+    def clean_canvas_by_click(self):
+        if self.view_canvas.get_mode() == func_mode['select']:
+            self.view_canvas.clean_all_pos_items()
+        elif self.view_canvas.get_mode() == func_mode['crop']:
+            self.view_canvas.delete_all_crop_win()
 
 
     ###########################
@@ -154,12 +161,6 @@ class palmGUI(QWidget):
     ##  Crop Mode Related  ##
     #########################
 
-    def delete_crop_win_by_signal(self, it):
-        if self.view_canvas._mode == func_mode['crop']:
-            del self.view_canvas._crop_win[-1]
-            self.view_canvas.delete_crop_win_from_scene(it)
-
-
     def crop_and_split_size_check(self):
         crop_win_adjust = False
         try:
@@ -177,6 +178,11 @@ class palmGUI(QWidget):
         except Exception:
             warning_msg("Crop size must be integer.")
         return crop_win_adjust
+
+
+    def delete_crop_win_by_signal(self, it):
+        del self.view_canvas._crop_win[-1]
+        self.view_canvas.delete_crop_win_from_scene(it)
 
 
     #######################

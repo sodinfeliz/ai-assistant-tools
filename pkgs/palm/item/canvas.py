@@ -178,6 +178,22 @@ class PalmPositionCanvas(PhotoViewer):
             self._scene.addItem(it)
 
 
+    def set_factor(self, factor):
+        self._factor = factor
+
+
+    def set_mode(self, mode):
+        self._mode = mode
+
+
+    def get_mode(self):
+        return self._mode
+
+
+    ###############################
+    #  Position Items related
+    ###############################
+
     def clean_all_pos_items(self):
         for it in self._palm_pos_items:
             self._scene.removeItem(it.item)
@@ -185,6 +201,7 @@ class PalmPositionCanvas(PhotoViewer):
 
 
     def initial_palm_pos(self, pos):
+        self.clean_all_pos_items()
         self._palm_pos = pos
         self._palm_pos = np.rint(self._palm_pos*self._factor).astype(self._palm_pos.dtype)
         self._add_point = True
@@ -192,16 +209,8 @@ class PalmPositionCanvas(PhotoViewer):
             self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red')))
 
 
-    def set_factor(self, factor):
-        self._factor = factor
-
-
     def set_add_point_mode(self, switch):
         self._add_point = switch
-
-
-    def set_mode(self, mode):
-        self._mode = mode
 
 
     ###############################

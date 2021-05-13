@@ -274,9 +274,9 @@ QPushButton:pressed{
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>583</x>
+      <x>473</x>
       <y>9</y>
-      <width>561</width>
+      <width>671</width>
       <height>38</height>
      </rect>
     </property>
@@ -292,7 +292,7 @@ QPushButton:pressed{
      </property>
      <property name="geometry">
       <rect>
-       <x>56</x>
+       <x>166</x>
        <y>6</y>
        <width>100</width>
        <height>24</height>
@@ -318,6 +318,9 @@ QPushButton:pressed{
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
+     <property name="placeholderText">
+      <string>Split Size</string>
+     </property>
     </widget>
     <widget class="QLineEdit" name="le_overlap_ratio">
      <property name="enabled">
@@ -325,7 +328,7 @@ QPushButton:pressed{
      </property>
      <property name="geometry">
       <rect>
-       <x>164</x>
+       <x>274</x>
        <y>6</y>
        <width>100</width>
        <height>24</height>
@@ -352,11 +355,14 @@ QPushButton:pressed{
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
+     <property name="placeholderText">
+      <string>Overlap Ratio</string>
+     </property>
     </widget>
     <widget class="QLabel" name="info_display">
      <property name="geometry">
       <rect>
-       <x>352</x>
+       <x>462</x>
        <y>6</y>
        <width>120</width>
        <height>24</height>
@@ -387,7 +393,7 @@ padding-bottom: 1px;</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>480</x>
+       <x>590</x>
        <y>6</y>
        <width>75</width>
        <height>24</height>
@@ -423,7 +429,7 @@ QPushButton:pressed {
      </property>
      <property name="geometry">
       <rect>
-       <x>271</x>
+       <x>381</x>
        <y>6</y>
        <width>75</width>
        <height>24</height>
@@ -451,6 +457,42 @@ QPushButton:pressed {
      </property>
      <property name="text">
       <string>CLEAR</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_crop_size_2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>58</x>
+       <y>6</y>
+       <width>100</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Tw Cen MT</family>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit {
+	border: 2px solid white;
+	border-radius: 10px;
+	background-color: #F1F1F1;
+	padding-bottom: 1px;
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>Resolution</string>
      </property>
     </widget>
    </widget>
