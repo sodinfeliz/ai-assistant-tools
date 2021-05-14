@@ -212,7 +212,7 @@ class palmGUI(QWidget):
             crop_size = int(self.le_crop_size.text())
             RectItemHandle.set_min_size(crop_size*self._factor)
             for rect in self.view_canvas._crop_win:
-                win = list(map(int, rect.rect().getCoords()))
+                win = list(map(int, rect.originRect().getCoords()))
                 x1, y1, x2, y2 = (np.array(win) / self._factor).astype('int')
                 width, height = x2-x1, y2-y1
                 if width < crop_size or height < crop_size:
