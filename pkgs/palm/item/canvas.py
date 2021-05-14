@@ -197,6 +197,7 @@ class PalmPositionCanvas(PhotoViewer):
     def clean_all_pos_items(self):
         for it in self._palm_pos_items:
             self._scene.removeItem(it.item)
+        self._palm_pos = []
         self._palm_pos_items = []
 
 

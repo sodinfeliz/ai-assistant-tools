@@ -17,7 +17,8 @@ from .item import PalmPositionCanvas, RectItemHandle, DatasetProducing
 from .style.stylesheet import connect_to_stylesheet
 
 palm_radius = 2 # unit: meter
-pixel_size = 0.107541
+#pixel_size = 0.107541
+pixel_size = 0.05
 size_limitation = 20000.
 func_mode = {'select': 0, 'crop': 1}
 
@@ -61,7 +62,7 @@ class palmGUI(QWidget):
 
 
     def canvas_initial(self, im_path):
-        self.org_im, self.im, self._factor, self._tfw = resize_image(im_path, pixel_size)
+        self.org_im, self.org_im_shape, self.im, self._factor, self._tfw = resize_image(im_path, pixel_size)
 
         self.view_canvas.setPhoto(self.im[..., ::-1].copy())
         self.view_canvas.set_factor(self._factor)
@@ -114,9 +115,9 @@ class palmGUI(QWidget):
             self.view_canvas.delete_all_crop_win()
 
 
-    ###########################
-    ##  Select Mode Related  ##
-    ###########################
+    #############################
+    ##  Position Data Related  
+    #############################
 
     def load_position(self):
         pos_path, _ = QFileDialog.getOpenFileName(self,
@@ -134,6 +135,10 @@ class palmGUI(QWidget):
                 y = int((self._tfw[3]-y)/pixel_size)
                 pos_new.append([x,y])
             palm_pos = np.array(pos_new)
+
+        # exclude the positions outside the image
+        #mode = 'gis' if isinstance(palm_pos[0,0], float) else 'img'
+        palm_pos = self.pos_filter(palm_pos)
 
         # Merge Dialog Window - select OK will merge the positions
         # that already in canvas with the new palm pos.
@@ -186,9 +191,19 @@ class palmGUI(QWidget):
         self.le_overlap_ratio.setEnabled(True)
 
 
-    #########################
-    ##  Crop Mode Related  ##
-    #########################
+    def pos_filter(self, pos):
+        pos_new = []
+        h, w = self.org_im_shape
+        for x, y in pos:
+            if 0 <= x < w and 0 <= y < h:
+                pos_new.append([x, y])
+
+        return np.array(pos_new)
+            
+
+    #############################
+    ##  Crop Mode Related 
+    #############################
 
     def crop_and_split_size_check(self):
         crop_win_adjust = False
@@ -214,9 +229,9 @@ class palmGUI(QWidget):
         self.view_canvas.delete_crop_win_from_scene(it)
 
 
-    #######################
-    ##  Dataset Related  ##
-    #######################
+    #############################
+    ##  Dataset Related 
+    #############################
 
     def dataset_producing(self):
         """

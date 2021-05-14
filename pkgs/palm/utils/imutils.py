@@ -27,4 +27,4 @@ def resize_image(im_path, pixel_size):
     im = cv2.resize(org_im, (int(im_shape[1] * im_factor),
                              int(im_shape[0] * im_factor)))
 
-    return org_im, im, im_factor, tfw
+    return org_im, im_shape, im, im_factor, tfw
