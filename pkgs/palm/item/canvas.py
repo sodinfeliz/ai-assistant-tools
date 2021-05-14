@@ -253,5 +253,5 @@ class PalmPositionCanvas(PhotoViewer):
     def get_all_crop_win(self):
         windows = []
         for rects in self._crop_win:
-            windows.append(list(map(int, rects.rect().getCoords())))
-        return windows
+            windows.append(list(map(int, rects.originRect().getCoords())))
+        return np.array(windows)

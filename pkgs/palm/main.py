@@ -16,7 +16,7 @@ from .utils.imutils import resize_image
 from .item import PalmPositionCanvas, RectItemHandle, DatasetProducing
 from .style.stylesheet import connect_to_stylesheet
 
-palm_radius = 2 # unit: meter
+palm_radius = 1.5 # unit: meter
 #pixel_size = 0.107541
 pixel_size = 0.05
 size_limitation = 20000.
@@ -68,6 +68,7 @@ class palmGUI(QWidget):
         self.view_canvas.set_factor(self._factor)
         self.view_canvas.set_add_point_mode(False)
         self.view_canvas.clean_all_pos_items()
+        self.view_canvas.delete_all_crop_win()
         self.view_canvas.add_item_signal.connect(self.add_signal_handler)
 
         self.pb_save_dataset.setEnabled(False)
@@ -237,18 +238,20 @@ class palmGUI(QWidget):
         """
         Producing the Pascal VOC dataset     
         """
+        self.info_display.setText('Waiting ...')
         windows = self.view_canvas.get_all_crop_win()
+        windows = (windows/self._factor).astype(int)
+
         size = self.check_split_size()
         ratio = self.check_overlap_ratio()
         if size is None or ratio is None: return
 
-        """
         self.prob_map_produce()
-        ds = DatasetProducing(self.org_im, self.lb, alpha=1.3)
-        ds.split(size, ratio)
+        ds = DatasetProducing(self.org_im, self.lb, alpha=.6)
+        ds.split(size, ratio, windows=windows)
         ds.save(filename=self._filename, save_dir=self._im_dir)
         self.info_display.setText("Dataset Completed !")
-        """
+
 
     def prob_map_produce(self):
         """

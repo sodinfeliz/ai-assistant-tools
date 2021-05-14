@@ -51,7 +51,7 @@ class DatasetProducing(object):
         self.n_class = n_class
 
         
-    def split(self, size: int, ratio: float, filter: tuple=None):
+    def split(self, size: int, ratio: float, filter: tuple=None, windows: np.ndarray=None):
         """Splitting the images into blocks
 
         # Args:
@@ -62,13 +62,27 @@ class DatasetProducing(object):
         assert all(sz >= size for sz in self.im.shape[:2])
         assert 0 <= ratio < 1
 
+        self.im_tiles = np.empty((0, size, size, 3), dtype=np.uint8)
+        self.vs_tiles = np.empty((0, size, size, 3), dtype=np.uint8)
+        self.lb_tiles = np.empty((0, size, size), dtype=np.uint8)
+
         stride = int(size * (1 - ratio))
-        self.im_tiles = view_as_windows(self.im, (size, size, 3), stride)
-        self.im_tiles = self.im_tiles.reshape(-1, *(size, size, 3))
-        self.vs_tiles = view_as_windows(self.vs, (size, size, 3), stride)
-        self.vs_tiles = self.vs_tiles.reshape(-1, *(size, size, 3))
-        self.lb_tiles = view_as_windows(self.lb, (size, size), stride)
-        self.lb_tiles = self.lb_tiles.reshape(-1, *(size, size))
+
+        if len(windows):
+            for x1, y1, x2, y2 in windows:
+                im = view_as_windows(self.im[y1:y2, x1:x2], (size, size, 3), stride)
+                self.im_tiles = np.concatenate((self.im_tiles, im.reshape(-1, *(size, size, 3))))
+                vs = view_as_windows(self.vs[y1:y2, x1:x2], (size, size, 3), stride)
+                self.vs_tiles = np.concatenate((self.vs_tiles, vs.reshape(-1, *(size, size, 3))))
+                lb = view_as_windows(self.lb[y1:y2, x1:x2], (size, size), stride)
+                self.lb_tiles = np.concatenate((self.lb_tiles, lb.reshape(-1, *(size, size))))
+        else:
+            self.im_tiles = view_as_windows(self.im, (size, size, 3), stride)
+            self.im_tiles = self.im_tiles.reshape(-1, *(size, size, 3))
+            self.vs_tiles = view_as_windows(self.vs, (size, size, 3), stride)
+            self.vs_tiles = self.vs_tiles.reshape(-1, *(size, size, 3))
+            self.lb_tiles = view_as_windows(self.lb, (size, size), stride)
+            self.lb_tiles = self.lb_tiles.reshape(-1, *(size, size))
 
         if filter is not None:
             assert len(filter) == 2

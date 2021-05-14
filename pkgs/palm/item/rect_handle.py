@@ -226,7 +226,6 @@ class RectItemHandle(QGraphicsRectItem):
             self.setRect(boundingRect)
 
         if self.__class__.minSize is not None:
-            print(boundingRect.width(), boundingRect.height())
             if abs(boundingRect.width()) < self.__class__.minSize or \
                abs(boundingRect.height()) < self.__class__.minSize:
                 self.switch_color('selected')
