@@ -67,9 +67,13 @@ class DatasetProducing(object):
         self.lb_tiles = np.empty((0, size, size), dtype=np.uint8)
 
         stride = int(size * (1 - ratio))
+        height, width = self.im.shape[:2]
 
         if len(windows):
-            for x1, y1, x2, y2 in windows:
+            for win in windows:
+                x1, y1, x2, y2 = self._win_size_trim(win, width, height)
+                print(f"Image size: {self.im[y1:y2, x1:x2].shape}")
+                print(f"Split size: ({size}, {size}, 3)")
                 im = view_as_windows(self.im[y1:y2, x1:x2], (size, size, 3), stride)
                 self.im_tiles = np.concatenate((self.im_tiles, im.reshape(-1, *(size, size, 3))))
                 vs = view_as_windows(self.vs[y1:y2, x1:x2], (size, size, 3), stride)
@@ -166,6 +170,15 @@ class DatasetProducing(object):
 
         self.vs[self.lb == 0] = self.im[self.lb == 0]
         self.vs = (self.vs*alpha + self.im*(1-alpha)).astype('uint8')
+
+
+    def _win_size_trim(self, win, width, height):
+        x1, y1, x2, y2 = win
+        x1 = max(0, x1)
+        y1 = max(0, y1)
+        x2 = min(width, x2)
+        y2 = min(height, y2)
+        return x1, y1, x2 ,y2
 
 
 if __name__ == "__main__":
