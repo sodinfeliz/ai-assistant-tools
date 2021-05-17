@@ -23,10 +23,14 @@ class DatasetProducing(object):
         """
         super().__init__()
         assert 0 <= alpha <= 1
-
+        
         self._check_im_and_lb(im, lb)
         self._check_n_class(n_class)
-        self._visualization_mask(seed, alpha)
+
+        # image and label visualization
+        np.random.seed(seed if seed is not None else np.random.randint(2**31))
+        self.lb_color = np.random.randint(256, size=(self.n_class, 3))
+        self.alpha = alpha
 
 
     def _check_im_and_lb(self, im, lb):
@@ -63,7 +67,6 @@ class DatasetProducing(object):
         assert 0 <= ratio < 1
 
         self.im_tiles = np.empty((0, size, size, 3), dtype=np.uint8)
-        self.vs_tiles = np.empty((0, size, size, 3), dtype=np.uint8)
         self.lb_tiles = np.empty((0, size, size), dtype=np.uint8)
 
         stride = int(size * (1 - ratio))
@@ -72,19 +75,13 @@ class DatasetProducing(object):
         if len(windows):
             for win in windows:
                 x1, y1, x2, y2 = self._win_size_trim(win, width, height)
-                print(f"Image size: {self.im[y1:y2, x1:x2].shape}")
-                print(f"Split size: ({size}, {size}, 3)")
                 im = view_as_windows(self.im[y1:y2, x1:x2], (size, size, 3), stride)
                 self.im_tiles = np.concatenate((self.im_tiles, im.reshape(-1, *(size, size, 3))))
-                vs = view_as_windows(self.vs[y1:y2, x1:x2], (size, size, 3), stride)
-                self.vs_tiles = np.concatenate((self.vs_tiles, vs.reshape(-1, *(size, size, 3))))
                 lb = view_as_windows(self.lb[y1:y2, x1:x2], (size, size), stride)
                 self.lb_tiles = np.concatenate((self.lb_tiles, lb.reshape(-1, *(size, size))))
         else:
             self.im_tiles = view_as_windows(self.im, (size, size, 3), stride)
             self.im_tiles = self.im_tiles.reshape(-1, *(size, size, 3))
-            self.vs_tiles = view_as_windows(self.vs, (size, size, 3), stride)
-            self.vs_tiles = self.vs_tiles.reshape(-1, *(size, size, 3))
             self.lb_tiles = view_as_windows(self.lb, (size, size), stride)
             self.lb_tiles = self.lb_tiles.reshape(-1, *(size, size))
 
@@ -106,9 +103,9 @@ class DatasetProducing(object):
         self.save_dir.joinpath('VisualImages').mkdir(parents=True)
 
         idx, fns = 0, []
-        for im, vs, lb in zip(self.im_tiles, self.vs_tiles, self.lb_tiles):
+        for im, lb in zip(self.im_tiles, self.lb_tiles):
             if np.max(im) == 0: continue
-
+            vs = self._label_visualization(im, lb)
             fns.append(f'{filename}_{idx}')
             cv2.imwrite(str(self.save_dir.joinpath('JPEGImages', f'{fns[-1]}.png')), im)
             cv2.imwrite(str(self.save_dir.joinpath('SegmentationClass', f'{fns[-1]}.png')), lb)
@@ -145,31 +142,25 @@ class DatasetProducing(object):
             return np.count_nonzero(mask)/area
 
         new_im_tiles = []
-        new_vs_tiles = []
         new_lb_tiles = []
         l_b, u_b = filter
 
-        for im, vs, lb in zip(self.im_tiles, self.vs_tiles, self.lb_tiles):
+        for im, vs, lb in zip(self.im_tiles, self.lb_tiles):
             r = coverage_ratio(lb)
             if l_b <= r <= u_b:
                 new_im_tiles.append(im)
-                new_vs_tiles.append(vs)
                 new_lb_tiles.append(lb)
 
         self.im_tiles = np.array(new_im_tiles).astype('uint8')
-        self.vs_tiles = np.array(new_vs_tiles).astype('uint8')
         self.lb_tiles = np.array(new_lb_tiles).astype('uint8')
 
 
-    def _visualization_mask(self, seed, alpha):
-        np.random.seed(seed if seed is not None else np.random.randint(2**31))
-        label_color = np.random.randint(256, size=(self.n_class, 3))
-        self.vs = np.zeros_like(self.im)
+    def _label_visualization(self, im, lb):
+        vs = np.zeros_like(im)
         for lb_class in range(self.n_class):
-            self.vs[self.lb == lb_class] = label_color[lb_class]
-
-        self.vs[self.lb == 0] = self.im[self.lb == 0]
-        self.vs = (self.vs*alpha + self.im*(1-alpha)).astype('uint8')
+            vs[lb == lb_class] = self.lb_color[lb_class]
+        vs[lb == 0] = im[lb == 0]
+        return (vs*self.alpha + im*(1-self.alpha)).astype('uint8')
 
 
     def _win_size_trim(self, win, width, height):
