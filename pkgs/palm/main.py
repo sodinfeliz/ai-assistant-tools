@@ -176,7 +176,11 @@ class palmGUI(QWidget):
     def save_position(self):
         im_pos = np.rint(self.view_canvas._palm_pos/self._factor).astype('int')
         df = pd.DataFrame(im_pos)
-        df.to_csv(os.path.join(self._im_dir, 'palm_img_pos.csv'), header=None, index=None)
+        try:
+            df.to_csv(os.path.join(self._im_dir, 'palm_img_pos.csv'), header=None, index=None)
+        except PermissionError as err:
+            critical_msg(str(err))
+            return
 
         # Geographic position saving
         if self._tfw[:2] != (0, 1):
@@ -184,7 +188,11 @@ class palmGUI(QWidget):
             im_pos[:, 0] = self._tfw[0] + im_pos[:, 0] * pixel_size
             im_pos[:, 1] = self._tfw[3] - im_pos[:, 1] * pixel_size
             df = pd.DataFrame(im_pos)
-            df.to_csv(os.path.join(self._im_dir, 'palm_gis_pos.csv'), header=None, index=None)
+            try:
+                df.to_csv(os.path.join(self._im_dir, 'palm_gis_pos.csv'), header=None, index=None)
+            except PermissionError as err:
+                critical_msg(str(err))
+                return
 
         self.info_display.setText("Save Done !")
         self.pb_save_dataset.setEnabled(True)
@@ -273,6 +281,7 @@ class palmGUI(QWidget):
             crop_size = int(self.le_crop_size.text())
             if self.crop_and_split_size_check():
                 warning_msg('Crop window size must greater than split size.')
+                return None
         except ValueError:
             if not self.le_crop_size.text():
                 warning_msg('Crop size cell is empty.')
