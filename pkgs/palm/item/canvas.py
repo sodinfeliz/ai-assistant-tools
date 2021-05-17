@@ -2,6 +2,8 @@ import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from scipy.spatial.distance import cdist
+from .circle import PosCircleItem
 
 
 class PhotoViewer(QGraphicsView):
@@ -97,12 +99,6 @@ class PhotoViewer(QGraphicsView):
             elif numSteps < 0:
                 self.zoom_out()
 
-#################################################
-#################################################
-from pandas import read_csv
-from scipy.spatial.distance import cdist
-from .circle import PosCircleItem
-
 
 class PalmPositionCanvas(PhotoViewer):
 
@@ -151,7 +147,7 @@ class PalmPositionCanvas(PhotoViewer):
                 if cdist([pos], self._palm_pos).min() <= round(30*self._factor):
                     index = cdist([pos], self._palm_pos).argmin()
                     self._palm_pos = np.delete(self._palm_pos, index, axis=0)
-                    self._scene.removeItem(self._palm_pos_items[index].item)
+                    self._scene.removeItem(self._palm_pos_items[index])
                     del self._palm_pos_items[index]
                 else:
                     self._palm_pos = np.vstack((self._palm_pos, pos))
@@ -171,11 +167,8 @@ class PalmPositionCanvas(PhotoViewer):
 
 
     def add_item_to_scene(self, it):
-        if self._mode == 0:
-            self._scene.addItem(it.item)
-            return it
-        else:
-            self._scene.addItem(it)
+        self._scene.addItem(it)
+        return it
 
 
     def set_factor(self, factor):
@@ -196,7 +189,7 @@ class PalmPositionCanvas(PhotoViewer):
 
     def clean_all_pos_items(self):
         for it in self._palm_pos_items:
-            self._scene.removeItem(it.item)
+            self._scene.removeItem(it)
         self._palm_pos = []
         self._palm_pos_items = []
 
