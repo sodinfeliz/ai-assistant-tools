@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from scipy import spatial
 
-from .dialog import warning_msg
+from .dialog import warning_msg, critical_msg
 from .utils.imutils import resize_image
 from .item import PalmPositionCanvas, RectItemHandle, DatasetProducing
 from .style.stylesheet import connect_to_stylesheet
