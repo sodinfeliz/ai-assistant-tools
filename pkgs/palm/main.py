@@ -29,9 +29,9 @@ class palmGUI(QWidget):
         loadUi('GUI/widget_palm.ui', self)
 
         # canvas initialization
-        vc_geometry = self.view_canvas.geometry()
-        self.view_canvas = PalmPositionCanvas(self, vc_geometry)
+        self.view_canvas = PalmPositionCanvas(self, QRect(0, 0, 10, 10))
         self.view_canvas.setViewportUpdateMode(0)
+        self.gl_canvas.addWidget(self.view_canvas)
         
         # push buttons setting
         self.pb_openfile.clicked.connect(self.file_open)
