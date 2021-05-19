@@ -12,7 +12,7 @@ def warning_msg(msg=''):
 
 def critical_msg(msg=''):
     file_empty = QMessageBox()
-    file_empty.setIcon(QMessageBox.Warning)
+    file_empty.setIcon(QMessageBox.Critical)
     file_empty.setText(msg)
     file_empty.setWindowTitle('Critical Message')
     file_empty.setStandardButtons(QMessageBox.Ok)

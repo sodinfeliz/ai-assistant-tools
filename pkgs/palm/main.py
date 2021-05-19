@@ -45,8 +45,24 @@ class palmGUI(QDialog):
         self.pb_crop_mode.clicked.connect(lambda: self.mode_switch('crop'))
         self.le_crop_size.setPlaceholderText('Crop Size')
         self.le_overlap_ratio.setPlaceholderText('Overlap Ratio')
-
         self.le_crop_size.editingFinished.connect(self.crop_and_split_size_check)
+
+
+    def mousePressEvent(self, mouseEvent: QMouseEvent) -> None:
+        self.mouse_from = mouseEvent.globalPos()
+        self.frame_from_x = self.x()
+        self.frame_from_y = self.y()
+        return super().mousePressEvent(mouseEvent)
+
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        move = event.globalPos() - self.mouse_from
+        self.setGeometry(QRect(
+            self.frame_from_x + move.x(),
+            self.frame_from_y + move.y(),
+            self.width(), self.height()
+        ))
+        return super().mousePressEvent(event)
 
 
     def file_open(self):
