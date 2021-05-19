@@ -51,15 +51,15 @@ class SaveWorker(QObject):
         pass
 
 
-class parcelGUI(QWidget):
+class parcelGUI(QDialog):
     def __init__(self, parent=None):
         super(parcelGUI, self).__init__(parent)
-        loadUi('GUI/widget_parcel.ui', self)
+        loadUi('GUI/dialog_parcel_widget.ui', self)
 
         # canvas initialization
-        vc_geometry = self.view_canvas.geometry()
-        self.view_canvas = ParcelCanvas(self, vc_geometry)
+        self.view_canvas = ParcelCanvas(self, QRect(0, 0, 10, 10))
         self.view_canvas.setViewportUpdateMode(0)
+        self.gl_canvas.addWidget(self.view_canvas)
         
         # widgets setting
         self.pb_open_image.clicked.connect(self.image_open)
