@@ -286,7 +286,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../GUIImg/exit.png</normaloff>../../GUIImg/exit.png</iconset>
+            <normaloff>../../GUIImg/exit2.png</normaloff>../../GUIImg/exit2.png</iconset>
           </property>
           <property name="iconSize">
            <size>

@@ -27,6 +27,7 @@ class palmGUI(QDialog):
     def __init__(self, parent=None):
         super(palmGUI, self).__init__(parent)
         loadUi('GUI/palm/dialog_palm.ui', self)
+        self.setWindowIcon(QIcon('GUIImg/palm-tree.png'))
 
         # canvas initialization
         self.view_canvas = PalmPositionCanvas(self, QRect(0, 0, 10, 10))
