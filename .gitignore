@@ -5,9 +5,5 @@ GUI/.old/
 
 # files ignoring
 *.ipynb
+.DS_Store
 GUIImg/_design.pptx
-
-
-
-
-
