@@ -108,7 +108,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/pb-save.png</normaloff>../GUIImg/pb-save.png</iconset>
+            <normaloff>../../GUIImg/pb-save.png</normaloff>../../GUIImg/pb-save.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -247,7 +247,7 @@ QPushButton:pressed {
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QPushButton" name="pb_return">
+         <widget class="QPushButton" name="pb_leave">
           <property name="minimumSize">
            <size>
             <width>21</width>
@@ -286,7 +286,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/exit.png</normaloff>../GUIImg/exit.png</iconset>
+            <normaloff>../../GUIImg/exit.png</normaloff>../../GUIImg/exit.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -373,7 +373,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/insert-picture-icon.png</normaloff>../GUIImg/insert-picture-icon.png</iconset>
+            <normaloff>../../GUIImg/insert-picture-icon.png</normaloff>../../GUIImg/insert-picture-icon.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -469,7 +469,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/placeholder.png</normaloff>../GUIImg/placeholder.png</iconset>
+            <normaloff>../../GUIImg/placeholder.png</normaloff>../../GUIImg/placeholder.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -586,7 +586,7 @@ QPushButton:pressed{
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../GUIImg/cursor3.png</normaloff>../GUIImg/cursor3.png</iconset>
+              <normaloff>../../GUIImg/cursor.png</normaloff>../../GUIImg/cursor.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -632,7 +632,7 @@ QPushButton:hover {
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../GUIImg/bnbox.png</normaloff>../GUIImg/bnbox.png</iconset>
+              <normaloff>../../GUIImg/bnbox.png</normaloff>../../GUIImg/bnbox.png</iconset>
             </property>
             <property name="iconSize">
              <size>

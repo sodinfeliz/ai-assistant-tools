@@ -157,7 +157,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/insert-picture-icon.png</normaloff>../GUIImg/insert-picture-icon.png</iconset>
+            <normaloff>../../GUIImg/insert-picture-icon.png</normaloff>../../GUIImg/insert-picture-icon.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -168,7 +168,7 @@ QPushButton:pressed{
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QPushButton" name="pb_return">
+         <widget class="QPushButton" name="pb_leave">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -204,8 +204,7 @@ QPushButton:pressed {
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/pb-home.png</normaloff>
-            <activeon>../GUIImg/pb-home-hover.png</activeon>../GUIImg/pb-home.png</iconset>
+            <normaloff>../../GUIImg/exit.png</normaloff>../../GUIImg/exit.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -254,7 +253,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/pb-save.png</normaloff>../GUIImg/pb-save.png</iconset>
+            <normaloff>../../GUIImg/pb-save.png</normaloff>../../GUIImg/pb-save.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -305,7 +304,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/block.png</normaloff>../GUIImg/block.png</iconset>
+            <normaloff>../../GUIImg/block.png</normaloff>../../GUIImg/block.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -347,7 +346,7 @@ QPushButton:pressed {
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/pb-repeat.png</normaloff>../GUIImg/pb-repeat.png</iconset>
+            <normaloff>../../GUIImg/pb-repeat.png</normaloff>../../GUIImg/pb-repeat.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -691,7 +690,7 @@ QPushButton:pressed{
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../GUIImg/bnbox.png</normaloff>../GUIImg/bnbox.png</iconset>
+              <normaloff>../../GUIImg/bnbox.png</normaloff>../../GUIImg/bnbox.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -734,7 +733,7 @@ QPushButton:hover {
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../GUIImg/segment.png</normaloff>../GUIImg/segment.png</iconset>
+              <normaloff>../../GUIImg/segment.png</normaloff>../../GUIImg/segment.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -778,7 +777,7 @@ QPushButton:hover {
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../GUIImg/box2.png</normaloff>../GUIImg/box2.png</iconset>
+              <normaloff>../../GUIImg/box2.png</normaloff>../../GUIImg/box2.png</iconset>
             </property>
             <property name="iconSize">
              <size>

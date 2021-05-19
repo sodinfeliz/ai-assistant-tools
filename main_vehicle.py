@@ -3,7 +3,8 @@ import signal
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from pkgs.mainGUI import mainGUI
+
+from pkgs.vehicle.ui import carUI
 
 app = None
 
@@ -22,5 +23,9 @@ if __name__ == '__main__':
     app.setOverrideCursor(Qt.ArrowCursor)
     app.setAttribute(Qt.AA_EnableHighDpiScaling)
     QFontDatabase.addApplicationFont("GUI/Merriweather-Regular.ttf")
-    widget = mainGUI()
+    dialog = carUI()
+    dialog.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint)
+    dialog.setAttribute(Qt.WA_NoSystemBackground)
+    dialog.setAttribute(Qt.WA_TranslucentBackground)
+    dialog.show()
     sys.exit(app.exec_())

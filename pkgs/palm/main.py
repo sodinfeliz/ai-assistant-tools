@@ -26,7 +26,7 @@ func_mode = {'select': 0, 'crop': 1}
 class palmGUI(QDialog):
     def __init__(self, parent=None):
         super(palmGUI, self).__init__(parent)
-        loadUi('GUI/dialog_palm.ui', self)
+        loadUi('GUI/palm/dialog_palm.ui', self)
 
         # canvas initialization
         self.view_canvas = PalmPositionCanvas(self, QRect(0, 0, 10, 10))
@@ -36,6 +36,7 @@ class palmGUI(QDialog):
         # push buttons setting
         self.pb_openfile.clicked.connect(self.file_open)
         self.pb_loadcsv.clicked.connect(self.load_position)
+        self.pb_leave.clicked.connect(self.close)
         self.pb_save_csv.clicked.connect(self.save_position)
         self.pb_save_dataset.clicked.connect(self.dataset_producing)
         self.pb_clear_crop.clicked.connect(self.clean_canvas_by_click)
@@ -87,7 +88,7 @@ class palmGUI(QDialog):
             mode (str): must be either 'select' or 'crop'
         """
         assert mode in func_mode, f"Undefined mode: {mode}."
-        ssdir = 'GUI/stylesheet/palm' # stylesheet directory
+        ssdir = 'GUI/palm'
         if self.view_canvas.get_mode() != func_mode[mode]:
             if mode == 'select':
                 self.pb_select_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))

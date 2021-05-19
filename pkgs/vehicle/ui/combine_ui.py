@@ -82,16 +82,16 @@ def parse_rec(filename):
 class carUI(QWidget):
     def __init__(self, parent=None):
         super(carUI, self).__init__(parent)
-        loadUi('GUI/widget_vehicle.ui', self)
+        loadUi('GUI/vehicle/widget_vehicle.ui', self)
 
         self._mode = 'bnbox' # start the bnbox page at first
         self._data_path = None
         self._filename = ''
 
         self.pb_openfile.clicked.connect(self.file_open)
-        self.pb_return.setShortcut('Home')
         self.pb_repeat.clicked.connect(self.reload_im_to_scene)
         self.pb_repeat.setShortcut('F2')
+        self.pb_leave.clicked.connect(self.close)
         self.pb_bnbox_mode.clicked.connect(lambda: self._top_widget_switch(mode='bnbox'))
         self.pb_crop_mode.clicked.connect(lambda: self._top_widget_switch(mode='crop'))
         self._canvas_widget_initial()
@@ -185,7 +185,6 @@ class carUI(QWidget):
 
     def _icon_setting(self):
         '''
-        self.pb_return.setIcon(QIcon('./GUIImg/pb-home.png'))
         self.pb_repeat.setIcon(QIcon('./GUIImg/pb-repeat.png'))
         self.pb_openfile.setIcon(QIcon('./GUIImg/pb-computer-folder.png'))
         self.pb_save.setIcon(QIcon('./GUIImg/pb-save.png'))

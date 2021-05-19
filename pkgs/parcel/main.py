@@ -54,7 +54,7 @@ class SaveWorker(QObject):
 class parcelGUI(QDialog):
     def __init__(self, parent=None):
         super(parcelGUI, self).__init__(parent)
-        loadUi('GUI/dialog_parcel.ui', self)
+        loadUi('GUI/parcel/dialog_parcel.ui', self)
 
         # canvas initialization
         self.view_canvas = ParcelCanvas(self, QRect(0, 0, 10, 10))
@@ -68,6 +68,7 @@ class parcelGUI(QDialog):
         self.pb_clear_crop.clicked.connect(self.view_canvas.delete_all_crop_win)
         self.pb_save.clicked.connect(self.data_save)
         self.pb_initial.clicked.connect(self._re_initialization)
+        self.pb_leave.clicked.connect(self.close)
 
         self.pb_crop_mode.clicked.connect(lambda: self.mode_switch('crop'))
         self.pb_poly_mode.clicked.connect(lambda: self.mode_switch('poly'))
@@ -88,7 +89,7 @@ class parcelGUI(QDialog):
             mode (str): must be either 'crop', 'poly' or 'cut'
         """
         assert mode in func_mode, f"Undefined mode: {mode}."
-        ssdir = 'GUI/stylesheet/parcel' # stylesheet directory
+        ssdir = 'GUI/parcel'
         if self.view_canvas.mode != func_mode[mode]:
             if mode == 'crop':
                 self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))
