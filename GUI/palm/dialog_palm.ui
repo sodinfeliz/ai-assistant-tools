@@ -108,7 +108,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../GUIImg/pb-save.png</normaloff>../../GUIImg/pb-save.png</iconset>
+            <normaloff>../../GUIImg/pb-save-hover.png</normaloff>../../GUIImg/pb-save-hover.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -189,11 +189,11 @@ QPushButton:pressed{
           </property>
           <property name="styleSheet">
            <string notr="true">QPushButton {
-	background-color: #4B7CE1;
+	background-color: #0055D2;
 	color: #F7F9FF;
 	border: 2px solid white;
 	border-radius: 10px;
-	padding-bottom: 1px;
+	padding-bottom: 2px;
 }
 QPushButton:pressed {
 	margin: 1 1 1 1;
@@ -286,7 +286,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../GUIImg/exit2.png</normaloff>../../GUIImg/exit2.png</iconset>
+            <normaloff>../../GUIImg/exit3.png</normaloff>../../GUIImg/exit3.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -373,7 +373,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../GUIImg/insert-picture-icon.png</normaloff>../../GUIImg/insert-picture-icon.png</iconset>
+            <normaloff>../../GUIImg/insert-picture-icon2.png</normaloff>../../GUIImg/insert-picture-icon2.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -469,7 +469,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../GUIImg/placeholder.png</normaloff>../../GUIImg/placeholder.png</iconset>
+            <normaloff>../../GUIImg/placeholder2.png</normaloff>../../GUIImg/placeholder2.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -522,11 +522,11 @@ QPushButton:pressed{
           </property>
           <property name="styleSheet">
            <string notr="true">QPushButton {
-	background-color: #4379E3;
+	background-color: #0055D2;
 	color: #F7F9FF;
 	border: 2px solid white;
 	border-radius: 10px;
-	padding-bottom: 1px;
+	padding-bottom: 2px;
 }
 QPushButton:pressed {
 	margin: 1 1 1 1;
@@ -586,12 +586,12 @@ QPushButton:pressed{
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../GUIImg/cursor.png</normaloff>../../GUIImg/cursor.png</iconset>
+              <normaloff>../../GUIImg/cursor2.png</normaloff>../../GUIImg/cursor2.png</iconset>
             </property>
             <property name="iconSize">
              <size>
-              <width>38</width>
-              <height>38</height>
+              <width>25</width>
+              <height>25</height>
              </size>
             </property>
            </widget>
@@ -632,7 +632,7 @@ QPushButton:hover {
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../GUIImg/bnbox.png</normaloff>../../GUIImg/bnbox.png</iconset>
+              <normaloff>../../GUIImg/bnbox2.png</normaloff>../../GUIImg/bnbox2.png</iconset>
             </property>
             <property name="iconSize">
              <size>
