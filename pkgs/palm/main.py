@@ -26,7 +26,7 @@ func_mode = {'select': 0, 'crop': 1}
 class palmGUI(QDialog):
     def __init__(self, parent=None):
         super(palmGUI, self).__init__(parent)
-        loadUi('GUI/dialog_palm_widget.ui', self)
+        loadUi('GUI/dialog_palm.ui', self)
 
         # canvas initialization
         self.view_canvas = PalmPositionCanvas(self, QRect(0, 0, 10, 10))

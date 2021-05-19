@@ -24,7 +24,7 @@ if __name__ == '__main__':
     app.setAttribute(Qt.AA_EnableHighDpiScaling)
     QFontDatabase.addApplicationFont("GUI/Merriweather-Regular.ttf")
     dialog = palmGUI()
-    dialog.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint)
+    dialog.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
     dialog.setAttribute(Qt.WA_NoSystemBackground)
     dialog.setAttribute(Qt.WA_TranslucentBackground)
     dialog.show()

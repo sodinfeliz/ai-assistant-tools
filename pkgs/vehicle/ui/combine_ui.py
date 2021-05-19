@@ -82,7 +82,7 @@ def parse_rec(filename):
 class carUI(QWidget):
     def __init__(self, parent=None):
         super(carUI, self).__init__(parent)
-        loadUi('GUI/widget_mixed.ui', self)
+        loadUi('GUI/widget_vehicle.ui', self)
 
         self._mode = 'bnbox' # start the bnbox page at first
         self._data_path = None

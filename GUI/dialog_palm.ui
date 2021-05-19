@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1111</width>
-    <height>835</height>
+    <width>977</width>
+    <height>652</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,20 +33,32 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QFrame" name="">
+    <widget class="QFrame" name="frame">
      <property name="styleSheet">
       <string notr="true">border: 1px solid rgba(0,0,0,.12);
 border-radius: 7px;
 background-color: white;</string>
      </property>
      <layout class="QGridLayout" name="gl_all">
+      <property name="leftMargin">
+       <number>7</number>
+      </property>
+      <property name="topMargin">
+       <number>7</number>
+      </property>
+      <property name="rightMargin">
+       <number>7</number>
+      </property>
+      <property name="bottomMargin">
+       <number>7</number>
+      </property>
       <property name="verticalSpacing">
        <number>9</number>
       </property>
       <item row="0" column="0">
        <layout class="QGridLayout" name="gl_bar">
         <property name="leftMargin">
-         <number>6</number>
+         <number>7</number>
         </property>
         <property name="topMargin">
          <number>6</number>
@@ -274,7 +286,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/pb-home.png</normaloff>../GUIImg/pb-home.png</iconset>
+            <normaloff>../GUIImg/exit.png</normaloff>../GUIImg/exit.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -361,7 +373,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../GUIImg/pb-computer-folder.png</normaloff>../GUIImg/pb-computer-folder.png</iconset>
+            <normaloff>../GUIImg/insert-picture-icon.png</normaloff>../GUIImg/insert-picture-icon.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -654,10 +666,10 @@ QPushButton:hover {
            <number>0</number>
           </property>
           <property name="rightMargin">
-           <number>13</number>
+           <number>12</number>
           </property>
           <property name="bottomMargin">
-           <number>14</number>
+           <number>12</number>
           </property>
          </layout>
         </item>
