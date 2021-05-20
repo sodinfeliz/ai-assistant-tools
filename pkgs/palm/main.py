@@ -53,7 +53,6 @@ class palmGUI(QDialog):
         self.mouse_from = mouseEvent.globalPos()
         self.frame_from_x = self.x()
         self.frame_from_y = self.y()
-        return super().mousePressEvent(mouseEvent)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         move = event.globalPos() - self.mouse_from
@@ -62,7 +61,6 @@ class palmGUI(QDialog):
             self.frame_from_y + move.y(),
             self.width(), self.height()
         ))
-        return super().mousePressEvent(event)
 
     def file_open(self):
         self._im_path, _ = QFileDialog.getOpenFileName(self,

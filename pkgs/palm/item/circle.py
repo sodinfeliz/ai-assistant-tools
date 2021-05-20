@@ -15,6 +15,28 @@ class PosCircleItem(QGraphicsEllipseItem):
             self.circle_size
         )
         self.color = color
+        self.dragging = False
+
+    def mousePressEvent(self, mouseEvent: 'QGraphicsSceneMouseEvent') -> None:
+        if mouseEvent.modifiers() == Qt.ShiftModifier and mouseEvent.buttons() == Qt.LeftButton:
+            self.mouse_from = mouseEvent.pos()
+            self.item_init_x = self.rect().x()
+            self.item_init_y = self.rect().y()
+            self.dragging = True
+
+    def mouseMoveEvent(self, mouseEvent: 'QGraphicsSceneMouseEvent') -> None:
+        if self.dragging:
+            move = mouseEvent.pos() - self.mouse_from
+            self.setRect(
+                self.item_init_x + move.x(),
+                self.item_init_y + move.y(),
+                self.__class__.circle_size,
+                self.__class__.circle_size
+            )
+
+    def mouseReleaseEvent(self, mouseEvent: 'QGraphicsSceneMouseEvent') -> None:
+        self.dragging = False
+        return super().mouseReleaseEvent(mouseEvent)
     
     def paint(self, painter, option, widget=None):
         qt_colors = {'red': Qt.red, 'blue': Qt.blue}
