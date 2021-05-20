@@ -119,7 +119,6 @@ class PalmPositionCanvas(PhotoViewer):
         self._crop_win = []
         self._factor = 1.
         self._add_point = False
-        self._palm_pos = np.empty((0,2), dtype=int)
         self._palm_pos_items = []
 
     def mousePressEvent(self, mouseEvent):     
@@ -142,11 +141,10 @@ class PalmPositionCanvas(PhotoViewer):
         if self.get_mode() == func_mode['select'] and self._add_point:    
             pos = self.mapToScene(mouseEvent.pos())
             pos = self._qpointf_to_list(pos)
-            dist = cdist([pos], self._palm_pos)
+            dist = None if self.no_pts else cdist([pos], self.get_palm_pos_list())
             
-            if len(self._palm_pos) and dist.min() <= 30 * self._factor:
+            if not self.no_pts and dist.min() <= 30 * self._factor:
                 index = dist.argmin()
-                self._palm_pos = np.delete(self._palm_pos, index, axis=0)
                 self._scene.removeItem(self._palm_pos_items[index])
                 del self._palm_pos_items[index]
             else:
@@ -180,21 +178,18 @@ class PalmPositionCanvas(PhotoViewer):
     def clean_all_pos_items(self):
         for it in self._palm_pos_items:
             self._scene.removeItem(it)
-        self._palm_pos = np.empty((0,2), dtype=int)
         self._palm_pos_items = []
 
-    def palm_pos_data_loading(self, pos, mode='insert'):
+    def palm_pos_data_loading(self, positions: np.ndarray, mode: str='insert'):
         assert mode in ['insert', 'override']
         if mode == 'override':
             self.clean_all_pos_items()
-            self._palm_pos = pos
-            self._palm_pos = np.rint(self._palm_pos*self._factor).astype(int)
-            for x, y in self._palm_pos:
+            for pos in positions:
+                x, y = (pos*self._factor).astype(int)
                 self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red')))
         elif mode == 'insert':
-            pos = np.rint(pos*self._factor).astype(int)
-            self._palm_pos = np.vstack((self._palm_pos, pos))
-            for x, y in pos:
+            for pos in positions:
+                x, y = (pos*self._factor).astype(int)
                 self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
 
         self._add_point = True
@@ -203,13 +198,19 @@ class PalmPositionCanvas(PhotoViewer):
         self._add_point = mode
 
     def get_palm_pos_list(self):
-        return np.rint(self._palm_pos/self._factor).astype(int)
+        pos = []
+        for it in self._palm_pos_items:
+            pos.append(it.center_pt())
+        return pos
 
     def _add_new_pos(self, pos):
         circle = PosCircleItem(*pos, 'red')
-        self._palm_pos = np.vstack((self._palm_pos, pos))
         self._palm_pos_items.append(self.add_item_to_scene(circle))
         self.add_item_signal.emit(QPointF(*pos))
+
+    @property
+    def no_pts(self):
+        return len(self._palm_pos_items) == 0
 
     ###############################
     #  Crop Windows related

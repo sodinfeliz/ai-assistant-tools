@@ -46,3 +46,8 @@ class PosCircleItem(QGraphicsEllipseItem):
         qt_colors = {'red': Qt.red, 'blue': Qt.blue}
         painter.setBrush(QBrush(qt_colors[self.color], style = Qt.SolidPattern))
         painter.drawEllipse(self.rect())
+
+    def center_pt(self) -> list:
+        cx = int(self.rect().x() + self.rect().width() // 2)
+        cy = int(self.rect().y() + self.rect().height() // 2)
+        return [cx, cy]

@@ -93,7 +93,7 @@ class palmGUI(QDialog):
 
         self.pb_save_dataset.setEnabled(False)
         self.pb_loadcsv.setEnabled(True)
-        self.pb_save_csv.setEnabled(False)
+        self.pb_save_csv.setEnabled(True)
         self.le_crop_size.setEnabled(False)
         self.le_overlap_ratio.setEnabled(False)
         self.info_display.setText('Image Loaded.')
@@ -132,7 +132,6 @@ class palmGUI(QDialog):
     def clean_canvas_by_click(self):
         if self.view_canvas.get_mode() == func_mode['select']:
             self.view_canvas.clean_all_pos_items()
-            self.pb_save_csv.setEnabled(False)
         elif self.view_canvas.get_mode() == func_mode['crop']:
             self.view_canvas.delete_all_crop_win()
 
@@ -188,7 +187,6 @@ class palmGUI(QDialog):
                 palm_pos = np.array(pos_new)
 
         self.view_canvas.palm_pos_data_loading(palm_pos, mode=mode)
-        self.pb_save_csv.setEnabled(True)
         self.info_display.setText('Position data loaded.')
 
     def save_position(self):
@@ -197,7 +195,12 @@ class palmGUI(QDialog):
         Gis position to `palm_gis_pos.csv`
         Image position to `palm_img_pos.csv`.
         """
-        im_pos = np.rint(self.view_canvas._palm_pos/self._factor).astype('int')
+        if self.view_canvas.no_pts:
+            warning_msg('Save failed since no point in canvas.')
+            return
+
+        im_pos = np.array(self.view_canvas.get_palm_pos_list() )
+        im_pos = np.rint(im_pos / self._factor).astype('int')
         df = pd.DataFrame(im_pos)
         try:
             df.to_csv(self._im_dir.joinpath('palm_img_pos.csv'), header=None, index=None)
@@ -293,7 +296,7 @@ class palmGUI(QDialog):
         Probability map producing
         """
         self.lb = np.zeros(self.org_im.shape[:2], dtype='uint8')
-        for pos in self.view_canvas._palm_pos:
+        for pos in self.view_canvas.get_palm_pos_list():
             x, y = np.rint(pos / self._factor).astype('int')
             cv2.circle(self.lb, (x, y), int(palm_radius/pixel_size), (1,), -1, cv2.LINE_AA)
 
