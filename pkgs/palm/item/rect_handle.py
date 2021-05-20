@@ -62,7 +62,6 @@ class RectItemHandle(QGraphicsRectItem):
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.updateHandlesPos()
 
-
     def handleAt(self, point):
         """
         Returns the resize handle below the given point.
@@ -72,10 +71,8 @@ class RectItemHandle(QGraphicsRectItem):
                 return k
         return None
 
-
     def hoverEnterEvent(self, moveEvent):
         super().hoverEnterEvent(moveEvent)
-
 
     def hoverMoveEvent(self, moveEvent):
         """
@@ -87,14 +84,12 @@ class RectItemHandle(QGraphicsRectItem):
             self.setCursor(cursor)
         super().hoverMoveEvent(moveEvent)
 
-
     def hoverLeaveEvent(self, moveEvent):
         """
         Executed when the mouse leaves the shape (NOT PRESSED).
         """
         self.setCursor(Qt.ArrowCursor)
         super().hoverLeaveEvent(moveEvent)
-
 
     def mousePressEvent(self, mouseEvent):
         """
@@ -107,14 +102,12 @@ class RectItemHandle(QGraphicsRectItem):
             self.mousePressRect = self.rect()
             super().mousePressEvent(mouseEvent)
 
-
     def mouseMoveEvent(self, mouseEvent):
         """
         Executed when the mouse is being moved over the item while being pressed.
         """
         if mouseEvent.modifiers() == Qt.ShiftModifier or self.creating:
             self.interactiveResize(mouseEvent.pos())
-
 
     def mouseReleaseEvent(self, mouseEvent):
         """
@@ -140,14 +133,12 @@ class RectItemHandle(QGraphicsRectItem):
 
         super().mouseReleaseEvent(mouseEvent)
 
-
     def originRect(self):
         """
         Returns the bounding rect of the shape (including the resize handles).
         """
         o = self.handleSize + self.handleSpace
         return self.rect().adjusted(o, o, -o, -o)
-
 
     def updateHandlesPos(self):
         """
@@ -159,7 +150,6 @@ class RectItemHandle(QGraphicsRectItem):
         self.handles[self.handleTopRight] = QRectF(b.right() - s, b.top(), s, s)
         self.handles[self.handleBottomLeft] = QRectF(b.left(), b.bottom() - s, s, s)
         self.handles[self.handleBottomRight] = QRectF(b.right() - s, b.bottom() - s, s, s)
-
 
     def interactiveResize(self, mousePos):
         """
@@ -235,7 +225,6 @@ class RectItemHandle(QGraphicsRectItem):
         self.updateHandlesPos()
         self.item_changed_signal.emit_signal()
 
-
     def shape(self):
         """
         Returns the shape of this item as a QPainterPath in local coordinates.
@@ -244,6 +233,11 @@ class RectItemHandle(QGraphicsRectItem):
         path.addRect(self.rect())
         return path
 
+    def width(self):
+        return self.originRect().width()
+
+    def height(self):
+        return self.originRect().height()
 
     def paint(self, painter, option, widget=None):
         """
@@ -266,11 +260,9 @@ class RectItemHandle(QGraphicsRectItem):
                 o = self.handleSize / 2 - 2  # adjusting the visual size to 2px
                 painter.drawEllipse(rect.adjusted(o, o, -o, -o))
 
-
     def is_creating(self):
         if self.originRect().width() == 1 and self.originRect().height() == 1:
             self.creating = True
-
 
     def switch_color(self, mode):
         if mode == 'default':
@@ -278,7 +270,6 @@ class RectItemHandle(QGraphicsRectItem):
         elif mode == 'selected':
             self.color = self.selectedColor
         self.update()
-
 
     @classmethod
     def set_min_size(cls, sz):

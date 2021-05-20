@@ -80,6 +80,7 @@ def parse_rec(filename):
 
 
 class carUI(QWidget):
+
     def __init__(self, parent=None):
         super(carUI, self).__init__(parent)
         loadUi('GUI/vehicle/widget_vehicle.ui', self)
@@ -96,7 +97,6 @@ class carUI(QWidget):
         self.pb_crop_mode.clicked.connect(lambda: self._top_widget_switch(mode='crop'))
         self._canvas_widget_initial()
         self._top_widget_initial()
-
 
     def _canvas_widget_initial(self):
         self.sw_canvas = QStackedWidget(self)
@@ -116,26 +116,24 @@ class carUI(QWidget):
         self.sw_canvas.addWidget(self.canvas_crop)
         self.sw_canvas.setCurrentWidget(self.canvas_bnbox)
 
-
     def _top_widget_switch(self, mode):
         if self._mode != mode:
             self._mode = mode
             self.sw_top_widget.setCurrentIndex(widget_index[self._mode])
             if mode == 'bnbox':
                 self.sw_canvas.setCurrentWidget(self.canvas_bnbox)
-                self.pb_bnbox_mode.setStyleSheet(connect_to_stylesheet('button_selected', dir='GUI/stylesheet/vehicle'))
-                self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/stylesheet/vehicle'))
-                self.pb_segment_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/stylesheet/vehicle'))
+                self.pb_bnbox_mode.setStyleSheet(connect_to_stylesheet('button_selected', dir='GUI/vehicle'))
+                self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/vehicle'))
+                self.pb_segment_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/vehicle'))
                 self.pb_save.clicked.connect(self.save_data)
                 self.pb_save.setShortcut('Ctrl+S')
             elif mode == 'crop':
                 self.sw_canvas.setCurrentWidget(self.canvas_crop)
-                self.pb_bnbox_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/stylesheet/vehicle'))
-                self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_selected', dir='GUI/stylesheet/vehicle'))
-                self.pb_segment_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/stylesheet/vehicle'))
+                self.pb_bnbox_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/vehicle'))
+                self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_selected', dir='GUI/vehicle'))
+                self.pb_segment_mode.setStyleSheet(connect_to_stylesheet('button_unselected', dir='GUI/vehicle'))
                 self.pb_save.clicked.connect(self.dataset_producing)
                 self.pb_save.setEnabled(False)
-
 
     def _top_widget_initial(self):
         self.sw_top_widget.setCurrentIndex(widget_index[self._mode])
@@ -181,17 +179,6 @@ class carUI(QWidget):
         self.cb_angle.addItem('3 Angles: 0, 60, 120')
         self.cb_angle.addItem('4 Angles: 0, 45, 90, 135')
         self.cb_angle.setEnabled(False)
-        
-
-    def _icon_setting(self):
-        '''
-        self.pb_repeat.setIcon(QIcon('./GUIImg/pb-repeat.png'))
-        self.pb_openfile.setIcon(QIcon('./GUIImg/pb-computer-folder.png'))
-        self.pb_save.setIcon(QIcon('./GUIImg/pb-save.png'))
-        self.pb_prev_frame.setIcon(QIcon('./GUIImg/pb-arrow-left.png'))
-        self.pb_next_frame.setIcon(QIcon('./GUIImg/pb-arrow-right.png'))
-        '''
-
 
     def file_open(self):
         """
@@ -222,19 +209,16 @@ class carUI(QWidget):
         else:
             warning_msg('Invalid directory !')
 
-
     def thread_load_im_to_scene(self):
         loading_thread = threading.Thread(target=self.load_im_to_scene)
         loading_thread.start()
         loading_thread.join()
-
 
     def reload_im_to_scene(self):
         if self._mode == 'bnbox' and self.canvas_bnbox.hasPhoto():
             self.load_im_to_scene()
         elif self._mode == 'crop' and self.canvas_crop.hasPhoto():
             self.load_im_to_scene()
-
 
     def load_im_to_scene(self):
         
@@ -289,12 +273,10 @@ class carUI(QWidget):
             self.le_crop_info.setText(
                 f'File: {self._filename}  Size: ({self.canvas_crop.back_im.shape[1]}, {self.canvas_crop.back_im.shape[0]})'
             )
-        
 
     def load_bndox_to_scene(self, index=0):
         for it in self._all_bnboxes[index]:
             self.canvas_bnbox.add_item_to_scene(it)
-
 
     def add_item_by_drag(self, pos):
         if self._mode == 'bnbox' and self.canvas_bnbox.hasPhoto():
@@ -308,7 +290,6 @@ class carUI(QWidget):
             item.item_changed_signal.signal.connect(self.item_changed)
             item.item_delete_signal.signal.connect(self.delete_item_by_signal)
 
-
     def add_new_class(self):
         new_class = self.le_new_class.text().lower()
         if not new_class:
@@ -320,7 +301,6 @@ class carUI(QWidget):
             self.cb_label.addItem(new_class)
             self.cb_label.setCurrentIndex(self.cb_label.count()-1)
 
-
     def delete_item_by_click(self, pos):
         index = int(self.le_current_frame.text())
         for i, it in enumerate(self._all_bnboxes[index]):
@@ -330,18 +310,15 @@ class carUI(QWidget):
                 self.item_changed()
                 break
 
-
     def delete_item_by_signal(self, it):
         del self._all_bnboxes[int(self.le_current_frame.text())][-1]
         self.canvas_bnbox.delete_item_on_scene(it)
-
 
     def item_changed(self):
         index =  int(self.le_current_frame.text())
         self.saved[index] = 1
         self.le_current_frame.setText(f'{index}')
         self.pb_save.setEnabled(True)
-
 
     def prev_frame(self):
         if self._mode == 'bnbox':
@@ -355,7 +332,6 @@ class carUI(QWidget):
             if index == 0:
                 self.pb_prev_frame.setEnabled(False)
             self.load_bndox_to_scene(index=index)
-        
 
     def next_frame(self):
         index = int(self.le_current_frame.text()) + 1
@@ -368,7 +344,6 @@ class carUI(QWidget):
         if index == len(self._im_path) - 1:
             self.pb_next_frame.setEnabled(False)
         self.load_bndox_to_scene(index=index)
-
 
     def save_data(self):
         for i, s in enumerate(self.saved):
@@ -388,7 +363,6 @@ class carUI(QWidget):
         self.saved = [0] * len(self._im_path)
         self.le_current_frame.setText(self.le_current_frame.text())
         self.pb_save.setEnabled(False)        
-        
 
     def mouseDoubleClickEvent(self, event):
         if self._mode == 'crop': 
@@ -409,7 +383,6 @@ class carUI(QWidget):
         else:
             super().mouseDoubleClickEvent(event)
 
-
     def _check_width_height(self):
         if not self.le_width.text().isdigit() or not self.le_height.text().isdigit():
             warning_msg("Invalid format in \'Width\' or \'Height\' cell.")
@@ -428,7 +401,6 @@ class carUI(QWidget):
 
         return True
 
-
     def dataset_producing(self):
         # retrieving all the crop bounding boxes in the current scene
         crop_boxes = self.canvas_crop.all_crop_bboxes()
@@ -442,7 +414,6 @@ class carUI(QWidget):
 
         progress_thread = threading.Thread(target=self.extract_process)
         progress_thread.start()
-
 
     def extract_process(self):
         self.pb_save.setEnabled(False)

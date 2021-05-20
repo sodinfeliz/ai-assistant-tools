@@ -16,6 +16,7 @@ from .utils.imutils import resize_image
 from .item import PalmPositionCanvas, RectItemHandle, DatasetProducing
 from .style.stylesheet import connect_to_stylesheet
 
+
 palm_radius = 1.5 # unit: meter
 #pixel_size = 0.107541
 pixel_size = 0.05
@@ -24,6 +25,7 @@ func_mode = {'select': 0, 'crop': 1}
 
 
 class palmGUI(QDialog):
+
     def __init__(self, parent=None):
         super(palmGUI, self).__init__(parent)
         loadUi('GUI/palm/dialog_palm.ui', self)
@@ -47,13 +49,11 @@ class palmGUI(QDialog):
         self.le_overlap_ratio.setPlaceholderText('Overlap Ratio')
         self.le_crop_size.editingFinished.connect(self.crop_and_split_size_check)
 
-
     def mousePressEvent(self, mouseEvent: QMouseEvent) -> None:
         self.mouse_from = mouseEvent.globalPos()
         self.frame_from_x = self.x()
         self.frame_from_y = self.y()
         return super().mousePressEvent(mouseEvent)
-
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         move = event.globalPos() - self.mouse_from
@@ -63,7 +63,6 @@ class palmGUI(QDialog):
             self.width(), self.height()
         ))
         return super().mousePressEvent(event)
-
 
     def file_open(self):
         self._im_path, _ = QFileDialog.getOpenFileName(self,
@@ -78,13 +77,12 @@ class palmGUI(QDialog):
         self._filename = self._im_dir.stem
         self.canvas_initial(self._im_path)
 
-
     def canvas_initial(self, im_path):
         self.org_im, self.org_im_shape, self.im, self._factor, self._tfw = resize_image(im_path, pixel_size)
 
         self.view_canvas.setPhoto(self.im[..., ::-1].copy())
         self.view_canvas.set_factor(self._factor)
-        self.view_canvas.set_add_point_mode(False)
+        self.view_canvas.set_add_point(True)
         self.view_canvas.clean_all_pos_items()
         self.view_canvas.delete_all_crop_win()
         self.view_canvas.add_item_signal.connect(self.add_signal_handler)
@@ -95,7 +93,6 @@ class palmGUI(QDialog):
         self.le_crop_size.setEnabled(False)
         self.le_overlap_ratio.setEnabled(False)
         self.info_display.setText('Image Loaded.')
-
     
     def mode_switch(self, mode):
         """ Mode switching and changing
@@ -115,7 +112,6 @@ class palmGUI(QDialog):
                 self.pb_crop_mode.setStyleSheet(connect_to_stylesheet('button_selected', ssdir))
             self.view_canvas.set_mode(func_mode[mode])
 
-
     def add_signal_handler(self, mousePos):
         if self.view_canvas.get_mode() == func_mode['select']:
             self.info_display.setText("")
@@ -125,14 +121,12 @@ class palmGUI(QDialog):
             self.view_canvas.add_crop_win_to_scene(item)
             item.item_delete_signal.signal.connect(self.delete_crop_win_by_signal)
 
-
     def clean_canvas_by_click(self):
         if self.view_canvas.get_mode() == func_mode['select']:
             self.view_canvas.clean_all_pos_items()
             self.pb_save_csv.setEnabled(False)
         elif self.view_canvas.get_mode() == func_mode['crop']:
             self.view_canvas.delete_all_crop_win()
-
 
     #############################
     ##  Position Data Related  
@@ -156,7 +150,6 @@ class palmGUI(QDialog):
             palm_pos = np.array(pos_new)
 
         # exclude the positions outside the image
-        #mode = 'gis' if isinstance(palm_pos[0,0], float) else 'img'
         palm_pos = self.pos_filter(palm_pos)
 
         # Merge Dialog Window - select OK will merge the positions
@@ -167,15 +160,15 @@ class palmGUI(QDialog):
             merge_msg_box = QMessageBox()
             merge_msg_box.setIcon(QMessageBox.Information)
             merge_msg_box.setText(
-                "There're already position loaded, \n" +
+                "There're already position in canvas, \n" +
                 "do you wanna merge the existing data \n" +
                 "with the new loaded one? (Select 'No' \n" +
                 "will override the existing data)")
             merge_msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.No)
             merge_msg_box.setDefaultButton(QMessageBox.Ok)
-            ret = merge_msg_box.exec_() # 1024: Ok, 65536: No
+            ret = merge_msg_box.exec()
             
-            if ret == 1024:
+            if ret == QMessageBox.Ok:
                 CLOSE_DISTANCE = 2 # unit: meter
                 mode = 'insert'
                 tree = spatial.cKDTree(pos_in_canvas)
@@ -190,12 +183,16 @@ class palmGUI(QDialog):
         self.pb_save_csv.setEnabled(True)
         self.info_display.setText('Position data loaded.')
 
-
     def save_position(self):
+        """
+        Saving the positions to csv files.
+        Gis position to `palm_gis_pos.csv`
+        Image position to `palm_img_pos.csv`.
+        """
         im_pos = np.rint(self.view_canvas._palm_pos/self._factor).astype('int')
         df = pd.DataFrame(im_pos)
         try:
-            df.to_csv(os.path.join(self._im_dir, 'palm_img_pos.csv'), header=None, index=None)
+            df.to_csv(self._im_dir.joinpath('palm_img_pos.csv'), header=None, index=None)
         except PermissionError as err:
             critical_msg(str(err))
             return
@@ -207,7 +204,7 @@ class palmGUI(QDialog):
             im_pos[:, 1] = self._tfw[3] - im_pos[:, 1] * pixel_size
             df = pd.DataFrame(im_pos)
             try:
-                df.to_csv(os.path.join(self._im_dir, 'palm_gis_pos.csv'), header=None, index=None)
+                df.to_csv(self._im_dir.joinpath('palm_gis_pos.csv'), header=None, index=None)
             except PermissionError as err:
                 critical_msg(str(err))
                 return
@@ -217,8 +214,11 @@ class palmGUI(QDialog):
         self.le_crop_size.setEnabled(True)
         self.le_overlap_ratio.setEnabled(True)
 
-
     def pos_filter(self, pos):
+        """ 
+        Crop the `crop_win` if they
+        exceeds the image size.
+        """
         pos_new = []
         h, w = self.org_im_shape
         for x, y in pos:
@@ -227,7 +227,6 @@ class palmGUI(QDialog):
 
         return np.array(pos_new)
             
-
     #############################
     ##  Crop Mode Related 
     #############################
@@ -250,11 +249,9 @@ class palmGUI(QDialog):
             warning_msg("Crop size must be integer.")
         return crop_win_adjust
 
-
     def delete_crop_win_by_signal(self, it):
         del self.view_canvas._crop_win[-1]
         self.view_canvas.delete_crop_win_from_scene(it)
-
 
     #############################
     ##  Dataset Related 
@@ -266,7 +263,7 @@ class palmGUI(QDialog):
         """
         self.info_display.setText('Waiting ...')
         windows = self.view_canvas.get_all_crop_win()
-        windows = (windows/self._factor).astype(int)
+        windows = (windows / self._factor).astype(int)
 
         size = self.check_split_size()
         ratio = self.check_overlap_ratio()
@@ -278,7 +275,6 @@ class palmGUI(QDialog):
         ds.save(filename=self._filename, save_dir=self._im_dir)
         self.info_display.setText("Dataset Completed !")
 
-
     def prob_map_produce(self):
         """
         Probability map producing
@@ -287,7 +283,6 @@ class palmGUI(QDialog):
         for pos in self.view_canvas._palm_pos:
             x, y = np.rint(pos / self._factor).astype('int')
             cv2.circle(self.lb, (x, y), int(palm_radius/pixel_size), (1,), -1, cv2.LINE_AA)
-
 
     def check_split_size(self):
         """
@@ -307,7 +302,6 @@ class palmGUI(QDialog):
                 warning_msg("Crop size must be integer.")
         return crop_size
 
-    
     def check_overlap_ratio(self):
         """
         Checking the overlap ratio format

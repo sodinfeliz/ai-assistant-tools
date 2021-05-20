@@ -3,7 +3,7 @@ from pathlib import Path
 
 def connect_to_stylesheet(fn, dir=None):
     if dir is None:
-        dir = Path('GUI/stylesheet/')
+        dir = Path('GUI/vehicle/')
     else: 
         dir = Path(dir)
 
