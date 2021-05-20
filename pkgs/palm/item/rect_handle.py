@@ -37,7 +37,7 @@ class RectItemHandle(QGraphicsRectItem):
         """
         Initialize the shape.
         """
-        super().__init__(x, y, width, height)
+        super(RectItemHandle, self).__init__(x, y, width, height)
         
         assert handleSize > 0
         self.handleSize = handleSize
@@ -53,16 +53,13 @@ class RectItemHandle(QGraphicsRectItem):
         self.creating = False
         self.item_changed_signal = ChangeSignal()
         self.item_delete_signal = DeleteSignal()
+
         self.color = self.defaultColor
 
-        self.setAcceptHoverEvents(True)
-        self.setFlag(QGraphicsItem.ItemIsMovable, True)
-        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
-        self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.updateHandlesPos()
 
-    def handleAt(self, point):
+    def handleAt(self, point: QPoint):
         """
         Returns the resize handle below the given point.
         """
@@ -71,36 +68,17 @@ class RectItemHandle(QGraphicsRectItem):
                 return k
         return None
 
-    def hoverEnterEvent(self, moveEvent):
-        super().hoverEnterEvent(moveEvent)
-
-    def hoverMoveEvent(self, moveEvent):
-        """
-        Executed when the mouse moves over the shape (NOT PRESSED).
-        """
-        if self.isSelected():
-            handle = self.handleAt(moveEvent.pos())
-            cursor = Qt.ArrowCursor if handle is None else self.handleCursors[handle]
-            self.setCursor(cursor)
-        super().hoverMoveEvent(moveEvent)
-
-    def hoverLeaveEvent(self, moveEvent):
-        """
-        Executed when the mouse leaves the shape (NOT PRESSED).
-        """
-        self.setCursor(Qt.ArrowCursor)
-        super().hoverLeaveEvent(moveEvent)
-
     def mousePressEvent(self, mouseEvent):
         """
         Executed when the mouse is pressed on the item.
         """
-        self.is_creating()
+        self.set_creating()
         if mouseEvent.modifiers() == Qt.ShiftModifier or self.creating:
             self.handleSelected = self.handleAt(mouseEvent.pos())
             self.mousePressPos = mouseEvent.pos()
             self.mousePressRect = self.rect()
-            super().mousePressEvent(mouseEvent)
+        elif mouseEvent.modifiers() == Qt.ControlModifier:
+            return super().mousePressEvent(mouseEvent)
 
     def mouseMoveEvent(self, mouseEvent):
         """
@@ -108,6 +86,8 @@ class RectItemHandle(QGraphicsRectItem):
         """
         if mouseEvent.modifiers() == Qt.ShiftModifier or self.creating:
             self.interactiveResize(mouseEvent.pos())
+        elif mouseEvent.modifiers() == Qt.ControlModifier:
+            return super().mouseMoveEvent(mouseEvent)
 
     def mouseReleaseEvent(self, mouseEvent):
         """
@@ -128,9 +108,9 @@ class RectItemHandle(QGraphicsRectItem):
             self.handleSelected = None
             self.mousePressPos = None
             self.mousePressRect = None
-            self.creating = False
             self.update()
 
+        self.creating = False
         super().mouseReleaseEvent(mouseEvent)
 
     def originRect(self):
@@ -243,26 +223,16 @@ class RectItemHandle(QGraphicsRectItem):
         """
         Paint the node in the graphic view.
         """
-        # drawing the bounding box rect
-        # (1, 254, 129)
         eSize = self.handleSize // 4
-
         painter.setBrush(QBrush(QColor(*self.color, 50)))
         painter.setPen(QPen(QColor(*self.color, 200), eSize, style=Qt.SolidLine, cap=Qt.RoundCap, join=Qt.RoundJoin))
         painter.drawRect(self.originRect())
 
-        # drawing the circle handles
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QBrush(QColor(255, 255, 255, 0)))
-        painter.setPen(QPen(QColor(255, 255, 255, 0), eSize, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
-        for handle, rect in self.handles.items():
-            if self.handleSelected is None or handle == self.handleSelected:
-                o = self.handleSize / 2 - 2  # adjusting the visual size to 2px
-                painter.drawEllipse(rect.adjusted(o, o, -o, -o))
-
-    def is_creating(self):
+    def set_creating(self):
         if self.originRect().width() == 1 and self.originRect().height() == 1:
             self.creating = True
+        else:
+            self.creating = False
 
     def switch_color(self, mode):
         if mode == 'default':

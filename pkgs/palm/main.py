@@ -62,6 +62,11 @@ class palmGUI(QDialog):
             self.width(), self.height()
         ))
 
+    def resizeEvent(self, a0: QResizeEvent) -> None:
+        if self.view_canvas.hasPhoto():
+            self.view_canvas.fitInView()
+        return super().resizeEvent(a0)
+
     def file_open(self):
         self._im_path, _ = QFileDialog.getOpenFileName(self,
             caption='Open File', 

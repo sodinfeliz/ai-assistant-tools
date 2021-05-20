@@ -23,6 +23,8 @@ class PosCircleItem(QGraphicsEllipseItem):
             self.item_init_x = self.rect().x()
             self.item_init_y = self.rect().y()
             self.dragging = True
+        else:
+            return super().mousePressEvent(mouseEvent)
 
     def mouseMoveEvent(self, mouseEvent: 'QGraphicsSceneMouseEvent') -> None:
         if self.dragging:
@@ -32,7 +34,10 @@ class PosCircleItem(QGraphicsEllipseItem):
                 self.item_init_y + move.y(),
                 self.__class__.circle_size,
                 self.__class__.circle_size
-            )
+            )        
+        else:
+            return super().mouseMoveEvent(mouseEvent)
+        
 
     def mouseReleaseEvent(self, mouseEvent: 'QGraphicsSceneMouseEvent') -> None:
         self.dragging = False
