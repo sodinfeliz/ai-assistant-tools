@@ -162,7 +162,7 @@ QPushButton:pressed{
          </widget>
         </item>
         <item row="0" column="8">
-         <widget class="QPushButton" name="pb_clear_crop">
+         <widget class="QPushButton" name="pb_clean">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -200,7 +200,7 @@ QPushButton:pressed {
 }</string>
           </property>
           <property name="text">
-           <string>CLEAR</string>
+           <string>CLEAN</string>
           </property>
          </widget>
         </item>

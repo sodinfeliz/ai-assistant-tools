@@ -42,7 +42,7 @@ class palmGUI(QDialog):
         self.pb_leave.clicked.connect(self.close)
         self.pb_save_csv.clicked.connect(self.save_position)
         self.pb_save_dataset.clicked.connect(self.dataset_producing)
-        self.pb_clear_crop.clicked.connect(self.clean_canvas_by_click)
+        self.pb_clean.clicked.connect(self.clean_canvas_by_click)
         self.pb_select_mode.clicked.connect(lambda: self.mode_switch('select'))
         self.pb_crop_mode.clicked.connect(lambda: self.mode_switch('crop'))
         self.le_crop_size.setPlaceholderText('Crop Size')
@@ -145,7 +145,7 @@ class palmGUI(QDialog):
             caption='Open File',
             filter="Excel (*.csv)")
         if not pos_path: return  # cancel button pressed
-        
+
         palm_pos = np.array(pd.read_csv(pos_path))
         if isinstance(palm_pos[0,0], float):
             palm_pos[:, 0] = (palm_pos[:, 0] - self._tfw[0]) // pixel_size
@@ -239,7 +239,7 @@ class palmGUI(QDialog):
         try:
             crop_size = int(self.le_crop_size.text())
             RectItemHandle.set_min_size(crop_size*self._factor)
-            for rect in self.view_canvas._crop_win:
+            for rect in self.view_canvas.crop_win_items:
                 win = list(map(int, rect.originRect().getCoords()))
                 x1, y1, x2, y2 = (np.array(win) / self._factor).astype('int')
                 width, height = x2-x1, y2-y1
@@ -253,11 +253,11 @@ class palmGUI(QDialog):
         return crop_win_adjust
 
     def delete_crop_win_by_signal(self, it):
-        del self.view_canvas._crop_win[-1]
+        del self.view_canvas.crop_win_items[-1]
         self.view_canvas.remove_item_from_scene(it)
 
     def zoom_crop_win(self):
-        for it in self.view_canvas._crop_win:
+        for it in self.view_canvas.crop_win_items:
             it.set_edge_width(self.view_canvas.get_zoom_factor())
             it.update()
 

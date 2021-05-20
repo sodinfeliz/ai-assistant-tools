@@ -115,11 +115,13 @@ class PalmPositionCanvas(PhotoViewer):
         super(PalmPositionCanvas, self).__init__(parent)
         self.setStyleSheet("background-color: #EDF3FF; border-radius: 7px;")
         self.setGeometry(geometry)
+
+        self.palm_pos_items = []
+        self.crop_win_items = []
+
         self._mode = func_mode['select']
-        self._crop_win = []
         self._factor = 1.
         self._add_point = False
-        self._palm_pos_items = []
 
     def mousePressEvent(self, mouseEvent):     
         if self.get_mode() == func_mode['crop']:
@@ -129,8 +131,8 @@ class PalmPositionCanvas(PhotoViewer):
                 mousePos = self.mapToScene(mouseEvent.pos())
                 cindex = self._closeast_crop_win(mousePos)
                 if cindex is not None:
-                    self._scene.removeItem(self._crop_win[cindex])
-                    del self._crop_win[cindex]
+                    self._scene.removeItem(self.crop_win_items[cindex])
+                    del self.crop_win_items[cindex]
                     self.delete_item_signal.emit()
             elif mouseEvent.buttons() == Qt.LeftButton and mouseEvent.modifiers() == Qt.NoModifier:
                 self.add_item_signal.emit(self.mapToScene(mouseEvent.pos()))
@@ -145,8 +147,8 @@ class PalmPositionCanvas(PhotoViewer):
             
             if not self.no_pts and dist.min() <= 30 * self._factor:
                 index = dist.argmin()
-                self._scene.removeItem(self._palm_pos_items[index])
-                del self._palm_pos_items[index]
+                self._scene.removeItem(self.palm_pos_items[index])
+                del self.palm_pos_items[index]
             else:
                 self._add_new_pos(pos)
 
@@ -179,9 +181,9 @@ class PalmPositionCanvas(PhotoViewer):
     ###############################
 
     def clean_all_pos_items(self):
-        for it in self._palm_pos_items:
+        for it in self.palm_pos_items:
             self.remove_item_from_scene(it)
-        self._palm_pos_items = []
+        self.palm_pos_items = []
 
     def palm_pos_data_loading(self, positions: np.ndarray, mode: str='insert'):
         assert mode in ['insert', 'override']
@@ -190,7 +192,7 @@ class PalmPositionCanvas(PhotoViewer):
 
         for pos in positions:
             x, y = (pos*self._factor).astype(int)
-            self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
+            self.palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
 
         self._add_point = True
 
@@ -199,18 +201,18 @@ class PalmPositionCanvas(PhotoViewer):
 
     def get_palm_pos_list(self):
         pos = []
-        for it in self._palm_pos_items:
+        for it in self.palm_pos_items:
             pos.append(it.center_pt)
         return pos
 
     def _add_new_pos(self, pos):
         circle = PosCircleItem(*pos, 'red')
-        self._palm_pos_items.append(self.add_item_to_scene(circle))
+        self.palm_pos_items.append(self.add_item_to_scene(circle))
         self.add_item_signal.emit(QPointF(*pos))
 
     @property
     def no_pts(self):
-        return len(self._palm_pos_items) == 0
+        return len(self.palm_pos_items) == 0
 
     ###############################
     #  Crop Windows related
@@ -218,19 +220,19 @@ class PalmPositionCanvas(PhotoViewer):
 
     def add_crop_win_to_scene(self, it):
         self.add_item_to_scene(it)
-        self._crop_win.append(it)
+        self.crop_win_items.append(it)
 
     def delete_all_crop_win(self):
-        """ Removing all '_crop_win' objects from scene """
-        for it in self._crop_win:
+        """ Removing all 'crop_win_items' objects from scene """
+        for it in self.crop_win_items:
             self.remove_item_from_scene(it)
-        self._crop_win = []
+        self.crop_win_items = []
         self.delete_item_signal.emit()
 
     def get_all_crop_win(self) -> np.ndarray:
         """ Return all `crop_win` coordinates. """
         windows = []
-        for rects in self._crop_win:
+        for rects in self.crop_win_items:
             windows.append(list(map(int, rects.originRect().getCoords())))
         return np.array(windows)
 
@@ -242,7 +244,7 @@ class PalmPositionCanvas(PhotoViewer):
         cdist = np.inf # candidate distance
         cindex = None  # candidate index
 
-        for idx, it in enumerate(self._crop_win):
+        for idx, it in enumerate(self.crop_win_items):
             rect = it.originRect()
             if not rect.contains(pos): continue
             cx = rect.x() + rect.width() // 2
