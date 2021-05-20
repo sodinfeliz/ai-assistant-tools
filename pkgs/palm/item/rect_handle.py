@@ -17,6 +17,7 @@ class DeleteSignal(QObject):
 
 class RectItemHandle(QGraphicsRectItem):
 
+    defaultEdgeWidth = 30
     defaultColor = (15, 71, 180)
     selectedColor = (224, 24, 24)
     minSize = None
@@ -33,7 +34,7 @@ class RectItemHandle(QGraphicsRectItem):
         handleBottomRight: Qt.SizeFDiagCursor,
     }
 
-    def __init__(self, x, y, width, height, handleSize=10):
+    def __init__(self, x, y, width, height, handleSize=10, zfactor=1):
         """
         Initialize the shape.
         """
@@ -53,9 +54,9 @@ class RectItemHandle(QGraphicsRectItem):
         self.creating = False
         self.item_changed_signal = ChangeSignal()
         self.item_delete_signal = DeleteSignal()
-
         self.color = self.defaultColor
 
+        self.set_edge_width(zfactor)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.updateHandlesPos()
 
@@ -223,9 +224,8 @@ class RectItemHandle(QGraphicsRectItem):
         """
         Paint the node in the graphic view.
         """
-        eSize = self.handleSize // 4
         painter.setBrush(QBrush(QColor(*self.color, 50)))
-        painter.setPen(QPen(QColor(*self.color, 200), eSize, style=Qt.SolidLine, cap=Qt.RoundCap, join=Qt.RoundJoin))
+        painter.setPen(QPen(QColor(*self.color, 200), self.edge_width, style=Qt.SolidLine, cap=Qt.RoundCap, join=Qt.RoundJoin))
         painter.drawRect(self.originRect())
 
     def set_creating(self):
@@ -233,6 +233,10 @@ class RectItemHandle(QGraphicsRectItem):
             self.creating = True
         else:
             self.creating = False
+
+    def set_edge_width(self, zfactor):
+        new_width = self.__class__.defaultEdgeWidth / (1.2**zfactor)
+        self.edge_width = 1 if new_width < 1 else int(new_width)
 
     def switch_color(self, mode):
         if mode == 'default':

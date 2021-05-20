@@ -89,6 +89,7 @@ class palmGUI(QDialog):
         self.view_canvas.clean_all_pos_items()
         self.view_canvas.delete_all_crop_win()
         self.view_canvas.add_item_signal.connect(self.add_signal_handler)
+        self.view_canvas.zoom_signal.connect(self.zoom_crop_win)
 
         self.pb_save_dataset.setEnabled(False)
         self.pb_loadcsv.setEnabled(True)
@@ -120,7 +121,11 @@ class palmGUI(QDialog):
             self.info_display.setText("")
         elif self.view_canvas.get_mode() == func_mode['crop']:
             x, y = mousePos.x(), mousePos.y()
-            item = RectItemHandle(x, y, 1, 1, handleSize=100)
+            item = RectItemHandle(
+                x, y, 1, 1, 
+                handleSize=100, 
+                zfactor=self.view_canvas.get_zoom_factor()
+            )
             self.view_canvas.add_crop_win_to_scene(item)
             item.item_delete_signal.signal.connect(self.delete_crop_win_by_signal)
 
@@ -255,6 +260,11 @@ class palmGUI(QDialog):
     def delete_crop_win_by_signal(self, it):
         del self.view_canvas._crop_win[-1]
         self.view_canvas.delete_crop_win_from_scene(it)
+
+    def zoom_crop_win(self):
+        for it in self.view_canvas._crop_win:
+            it.set_edge_width(self.view_canvas.get_zoom_factor())
+            it.update()
 
     #############################
     ##  Dataset Related 

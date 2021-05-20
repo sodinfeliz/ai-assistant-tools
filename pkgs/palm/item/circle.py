@@ -5,14 +5,14 @@ from PyQt5.QtWidgets import *
 
 class PosCircleItem(QGraphicsEllipseItem):
     
-    circle_size = 12
+    defaultCircleSize = 12
 
     def __init__(self, x, y, color='red'):
         super(PosCircleItem, self).__init__(
-            x-self.circle_size//2,
-            y-self.circle_size//2,
-            self.circle_size,
-            self.circle_size
+            x-self.__class__.defaultCircleSize//2,
+            y-self.__class__.defaultCircleSize//2,
+            self.__class__.defaultCircleSize,
+            self.__class__.defaultCircleSize
         )
         self.color = color
         self.dragging = False
@@ -32,12 +32,11 @@ class PosCircleItem(QGraphicsEllipseItem):
             self.setRect(
                 self.item_init_x + move.x(),
                 self.item_init_y + move.y(),
-                self.__class__.circle_size,
-                self.__class__.circle_size
+                self.__class__.defaultCircleSize,
+                self.__class__.defaultCircleSize
             )        
         else:
             return super().mouseMoveEvent(mouseEvent)
-        
 
     def mouseReleaseEvent(self, mouseEvent: 'QGraphicsSceneMouseEvent') -> None:
         self.dragging = False

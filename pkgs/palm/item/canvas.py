@@ -15,6 +15,9 @@ func_mode = {
 
 
 class PhotoViewer(QGraphicsView):
+
+    zoom_signal = pyqtSignal()
+
     def __init__(self, parent=None):
         super(PhotoViewer, self).__init__(parent)
         self._zoom = 0
@@ -85,18 +88,23 @@ class PhotoViewer(QGraphicsView):
                 self.scale(factor, factor)
             else:
                 self._zoom = 0 
-                self.fitInView() 
+                self.fitInView()
+
+    def get_zoom_factor(self):
+        return self._zoom
 
     def wheelEvent(self, event):
         numDegrees = event.angleDelta() / 8
         numSteps = (numDegrees / 15).y()
         
-        if self.hasPhoto() and event.modifiers() == Qt.ControlModifier:
+        if self.hasPhoto():
             if numSteps > 0:
                 self.zoom_in()
-            elif numSteps < 0:
+                self.zoom_signal.emit()
+            elif numSteps < 0 and self._zoom != 0:
                 self.zoom_out()
-
+                self.zoom_signal.emit()
+            
 
 class PalmPositionCanvas(PhotoViewer):
 
