@@ -214,12 +214,6 @@ class RectItemHandle(QGraphicsRectItem):
         path.addRect(self.rect())
         return path
 
-    def width(self):
-        return self.originRect().width()
-
-    def height(self):
-        return self.originRect().height()
-
     def paint(self, painter, option, widget=None):
         """
         Paint the node in the graphic view.
@@ -229,10 +223,7 @@ class RectItemHandle(QGraphicsRectItem):
         painter.drawRect(self.originRect())
 
     def set_creating(self):
-        if self.originRect().width() == 1 and self.originRect().height() == 1:
-            self.creating = True
-        else:
-            self.creating = False
+        self.creating = self.width == 1 and self.height == 1
 
     def set_edge_width(self, zfactor):
         new_width = self.__class__.defaultEdgeWidth / (1.2**zfactor)
@@ -247,4 +238,12 @@ class RectItemHandle(QGraphicsRectItem):
 
     @classmethod
     def set_min_size(cls, sz):
-        cls.minSize = sz 
+        cls.minSize = sz
+
+    @property
+    def width(self):
+        return self.originRect().width()
+
+    @property
+    def height(self):
+        return self.originRect().height()

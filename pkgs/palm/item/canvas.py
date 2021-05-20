@@ -154,6 +154,9 @@ class PalmPositionCanvas(PhotoViewer):
         self._scene.addItem(it)
         return it
 
+    def remove_item_from_scene(self, it):
+        self._scene.removeItem(it)
+
     def set_factor(self, factor):
         self._factor = factor
 
@@ -177,20 +180,17 @@ class PalmPositionCanvas(PhotoViewer):
 
     def clean_all_pos_items(self):
         for it in self._palm_pos_items:
-            self._scene.removeItem(it)
+            self.remove_item_from_scene(it)
         self._palm_pos_items = []
 
     def palm_pos_data_loading(self, positions: np.ndarray, mode: str='insert'):
         assert mode in ['insert', 'override']
         if mode == 'override':
             self.clean_all_pos_items()
-            for pos in positions:
-                x, y = (pos*self._factor).astype(int)
-                self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red')))
-        elif mode == 'insert':
-            for pos in positions:
-                x, y = (pos*self._factor).astype(int)
-                self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
+
+        for pos in positions:
+            x, y = (pos*self._factor).astype(int)
+            self._palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
 
         self._add_point = True
 
@@ -200,7 +200,7 @@ class PalmPositionCanvas(PhotoViewer):
     def get_palm_pos_list(self):
         pos = []
         for it in self._palm_pos_items:
-            pos.append(it.center_pt())
+            pos.append(it.center_pt)
         return pos
 
     def _add_new_pos(self, pos):
@@ -220,17 +220,15 @@ class PalmPositionCanvas(PhotoViewer):
         self.add_item_to_scene(it)
         self._crop_win.append(it)
 
-    def delete_crop_win_from_scene(self, it):
-        self._scene.removeItem(it)
-
     def delete_all_crop_win(self):
         """ Removing all '_crop_win' objects from scene """
         for it in self._crop_win:
-            self.delete_crop_win_from_scene(it)
+            self.remove_item_from_scene(it)
         self._crop_win = []
         self.delete_item_signal.emit()
 
-    def get_all_crop_win(self):
+    def get_all_crop_win(self) -> np.ndarray:
+        """ Return all `crop_win` coordinates. """
         windows = []
         for rects in self._crop_win:
             windows.append(list(map(int, rects.originRect().getCoords())))

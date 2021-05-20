@@ -140,30 +140,22 @@ class palmGUI(QDialog):
     #############################
 
     def load_position(self):
+        """ Loading position data file (`.csv`). """
         pos_path, _ = QFileDialog.getOpenFileName(self,
             caption='Open File',
             filter="Excel (*.csv)")
         if not pos_path: return  # cancel button pressed
-
+        
         palm_pos = np.array(pd.read_csv(pos_path))
-
-        # convert the geopos into image positions
         if isinstance(palm_pos[0,0], float):
-            pos_new = []
-            for x, y in palm_pos:
-                x = int((x-self._tfw[0])/pixel_size)
-                y = int((self._tfw[3]-y)/pixel_size)
-                pos_new.append([x,y])
-            palm_pos = np.array(pos_new)
-
-        # exclude the positions outside the image
+            palm_pos[:, 0] = (palm_pos[:, 0] - self._tfw[0]) // pixel_size
+            palm_pos[:, 1] = (self._tfw[3] - palm_pos[:, 1]) // pixel_size
         palm_pos = self.pos_filter(palm_pos)
 
         # Merge Dialog Window - select OK will merge the positions
         # that already in canvas with the new palm pos.
-        pos_in_canvas = self.view_canvas.get_palm_pos_list()
         mode = 'override'
-        if len(pos_in_canvas):
+        if not self.view_canvas.no_pts:
             merge_msg_box = QMessageBox()
             merge_msg_box.setIcon(QMessageBox.Information)
             merge_msg_box.setText(
@@ -178,7 +170,7 @@ class palmGUI(QDialog):
             if ret == QMessageBox.Ok:
                 CLOSE_DISTANCE = 2 # unit: meter
                 mode = 'insert'
-                tree = spatial.cKDTree(pos_in_canvas)
+                tree = spatial.cKDTree(self.view_canvas.get_palm_pos_list())
                 pos_new = []
                 for x, y in palm_pos:
                     indices = tree.query_ball_point([[x,y]], r=int(CLOSE_DISTANCE/pixel_size))
@@ -199,7 +191,7 @@ class palmGUI(QDialog):
             warning_msg('Save failed since no point in canvas.')
             return
 
-        im_pos = np.array(self.view_canvas.get_palm_pos_list() )
+        im_pos = np.array(self.view_canvas.get_palm_pos_list())
         im_pos = np.rint(im_pos / self._factor).astype('int')
         df = pd.DataFrame(im_pos)
         try:
@@ -262,7 +254,7 @@ class palmGUI(QDialog):
 
     def delete_crop_win_by_signal(self, it):
         del self.view_canvas._crop_win[-1]
-        self.view_canvas.delete_crop_win_from_scene(it)
+        self.view_canvas.remove_item_from_scene(it)
 
     def zoom_crop_win(self):
         for it in self.view_canvas._crop_win:
