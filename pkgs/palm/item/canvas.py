@@ -113,7 +113,7 @@ class PalmPositionCanvas(PhotoViewer):
 
     def __init__(self, parent, geometry: QRect):
         super(PalmPositionCanvas, self).__init__(parent)
-        self.setStyleSheet("background-color: #EDF3FF; border-radius: 7px;")
+        self.setStyleSheet("background-color: #EDF3FF; border-radius: 7px; border: None;")
         self.setGeometry(geometry)
 
         self.palm_pos_items = []
