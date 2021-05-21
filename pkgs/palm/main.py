@@ -56,7 +56,6 @@ class palmGUI(QDialog):
         self.mouse_from = mouseEvent.globalPos()
         self.frame_from_x = self.x()
         self.frame_from_y = self.y()
-        return super().mousePressEvent(mouseEvent)
 
     def mouseMoveEvent(self, mouseEvent: QMouseEvent) -> None:
         if not self.full_screen:
@@ -66,21 +65,27 @@ class palmGUI(QDialog):
                 self.frame_from_y + move.y(),
                 self.width(), self.height()
             ))
-        return super().mouseMoveEvent(mouseEvent)
 
     def mouseDoubleClickEvent(self, mouseEvent: QMouseEvent) -> None:
         if self.full_screen:
-            self.setGeometry(self.org_screen_sz)
             self.full_screen = False
+            self.setGeometry(self.org_screen_sz)
+            self.setSizeGripEnabled(True)
         else:
             self.full_screen = True
             self.org_screen_sz = self.geometry()
+            self.setSizeGripEnabled(False)
             x, y, _, _ = self.org_screen_sz.getCoords()
             for m in get_monitors():
                 if m.x <= x < m.x + m.width and m.y <= y < m.y + m.height:
-                    self.setGeometry(QRect(m.x, m.y, m.width, m.height))
+                    shift = 1 # prevent from QSizeGrip disappearing
+                    self.setGeometry(QRect(
+                        m.x + shift, 
+                        m.y + shift, 
+                        m.width - 2*shift,
+                        m.height- 2*shift
+                    ))
                     break
-        return super().mouseDoubleClickEvent(mouseEvent)
             
     def resizeEvent(self, a0: QResizeEvent) -> None:
         if self.view_canvas.hasPhoto():
