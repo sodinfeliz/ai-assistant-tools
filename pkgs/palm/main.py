@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from scipy import spatial
+from screeninfo import get_monitors
 
 from .dialog import warning_msg, critical_msg
 from .utils.imutils import resize_image
@@ -30,6 +31,8 @@ class palmGUI(QDialog):
         super(palmGUI, self).__init__(parent)
         loadUi('GUI/palm/dialog_palm.ui', self)
         self.setWindowIcon(QIcon('GUIImg/palm-tree.png'))
+        self.full_screen = False
+        self.org_screen_sz = None
 
         # canvas initialization
         self.view_canvas = PalmPositionCanvas(self, QRect(0, 0, 10, 10))
@@ -53,18 +56,36 @@ class palmGUI(QDialog):
         self.mouse_from = mouseEvent.globalPos()
         self.frame_from_x = self.x()
         self.frame_from_y = self.y()
+        return super().mousePressEvent(mouseEvent)
 
-    def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        move = event.globalPos() - self.mouse_from
-        self.setGeometry(QRect(
-            self.frame_from_x + move.x(),
-            self.frame_from_y + move.y(),
-            self.width(), self.height()
-        ))
+    def mouseMoveEvent(self, mouseEvent: QMouseEvent) -> None:
+        if not self.full_screen:
+            move = mouseEvent.globalPos() - self.mouse_from
+            self.setGeometry(QRect(
+                self.frame_from_x + move.x(),
+                self.frame_from_y + move.y(),
+                self.width(), self.height()
+            ))
+        return super().mouseMoveEvent(mouseEvent)
 
+    def mouseDoubleClickEvent(self, mouseEvent: QMouseEvent) -> None:
+        if self.full_screen:
+            self.setGeometry(self.org_screen_sz)
+            self.full_screen = False
+        else:
+            self.full_screen = True
+            self.org_screen_sz = self.geometry()
+            x, y, _, _ = self.org_screen_sz.getCoords()
+            for m in get_monitors():
+                if m.x <= x < m.x + m.width and m.y <= y < m.y + m.height:
+                    self.setGeometry(QRect(m.x, m.y, m.width, m.height))
+                    break
+        return super().mouseDoubleClickEvent(mouseEvent)
+            
     def resizeEvent(self, a0: QResizeEvent) -> None:
         if self.view_canvas.hasPhoto():
             self.view_canvas.fitInView()
+            self.full_screen = False
         return super().resizeEvent(a0)
 
     def file_open(self):
@@ -191,7 +212,7 @@ class palmGUI(QDialog):
             warning_msg('Save failed since no point in canvas.')
             return
 
-        im_pos = np.array(self.view_canvas.get_palm_pos_list())
+        im_pos = self.view_canvas.get_palm_pos_list()
         im_pos = np.rint(im_pos / self._factor).astype('int')
         df = pd.DataFrame(im_pos)
         try:

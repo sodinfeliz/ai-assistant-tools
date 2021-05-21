@@ -199,11 +199,9 @@ class PalmPositionCanvas(PhotoViewer):
     def set_add_point(self, mode):
         self._add_point = mode
 
-    def get_palm_pos_list(self):
-        pos = []
-        for it in self.palm_pos_items:
-            pos.append(it.center_pt)
-        return pos
+    def get_palm_pos_list(self) -> np.ndarray:
+        pos = [it.center_pt for it in self.palm_pos_items]
+        return np.array(pos)
 
     def _add_remove_pos_in_canvas(self, mouse_pos):
         pos = self.mapToScene(mouse_pos)
