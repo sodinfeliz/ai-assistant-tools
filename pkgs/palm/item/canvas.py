@@ -141,16 +141,16 @@ class PalmPositionCanvas(PhotoViewer):
 
     def mouseDoubleClickEvent(self, mouseEvent):
         if self.get_mode() == func_mode['select'] and self._add_point:    
-            pos = self.mapToScene(mouseEvent.pos())
-            pos = self._qpointf_to_list(pos)
-            dist = None if self.no_pts else cdist([pos], self.get_palm_pos_list())
-            
-            if not self.no_pts and dist.min() <= 30 * self._factor:
-                index = dist.argmin()
-                self._scene.removeItem(self.palm_pos_items[index])
-                del self.palm_pos_items[index]
-            else:
-                self._add_new_pos(pos)
+            self._add_remove_pos_in_canvas(mouseEvent.pos())
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        self.mouse_pos = event.pos()
+        return super().mouseMoveEvent(event)
+
+    def keyPressEvent(self, keyEvent: QKeyEvent) -> None:
+        if self.get_mode() == func_mode['select'] and \
+           self._add_point and keyEvent.key() == Qt.Key_Space:
+            self._add_remove_pos_in_canvas(self.mouse_pos)
 
     def add_item_to_scene(self, it):
         self._scene.addItem(it)
@@ -205,10 +205,19 @@ class PalmPositionCanvas(PhotoViewer):
             pos.append(it.center_pt)
         return pos
 
-    def _add_new_pos(self, pos):
-        circle = PosCircleItem(*pos, 'red')
-        self.palm_pos_items.append(self.add_item_to_scene(circle))
-        self.add_item_signal.emit(QPointF(*pos))
+    def _add_remove_pos_in_canvas(self, mouse_pos):
+        pos = self.mapToScene(mouse_pos)
+        pos = self._qpointf_to_list(pos)
+        dist = None if self.no_pts else cdist([pos], self.get_palm_pos_list())
+        
+        if not self.no_pts and dist.min() <= 30 * self._factor:
+            index = dist.argmin()
+            self._scene.removeItem(self.palm_pos_items[index])
+            del self.palm_pos_items[index]
+        else:
+            circle = PosCircleItem(*pos, 'red')
+            self.palm_pos_items.append(self.add_item_to_scene(circle))
+            self.add_item_signal.emit(QPointF(*pos))
 
     @property
     def no_pts(self):
