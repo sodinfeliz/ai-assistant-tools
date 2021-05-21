@@ -52,6 +52,10 @@ class palmGUI(QDialog):
         self.le_overlap_ratio.setPlaceholderText('Overlap Ratio')
         self.le_crop_size.editingFinished.connect(self.crop_and_split_size_check)
 
+        # Shortcut setting
+        QShortcut(Qt.CTRL+Qt.Key_S, self, self.save_position)
+        QShortcut(Qt.Key_Escape, self, self.close)
+
     def mousePressEvent(self, mouseEvent: QMouseEvent) -> None:
         self.mouse_from = mouseEvent.globalPos()
         self.frame_from_x = self.x()
@@ -78,13 +82,7 @@ class palmGUI(QDialog):
             x, y, _, _ = self.org_screen_sz.getCoords()
             for m in get_monitors():
                 if m.x <= x < m.x + m.width and m.y <= y < m.y + m.height:
-                    shift = 1 # prevent from QSizeGrip disappearing
-                    self.setGeometry(QRect(
-                        m.x + shift, 
-                        m.y + shift, 
-                        m.width - 2*shift,
-                        m.height- 2*shift
-                    ))
+                    self.setGeometry(QRect(m.x, m.y, m.width, m.height))
                     break
             
     def resizeEvent(self, a0: QResizeEvent) -> None:
@@ -213,6 +211,7 @@ class palmGUI(QDialog):
         Gis position to `palm_gis_pos.csv`
         Image position to `palm_img_pos.csv`.
         """
+        if not self.view_canvas.hasPhoto(): return
         if self.view_canvas.no_pts:
             warning_msg('Save failed since no point in canvas.')
             return
