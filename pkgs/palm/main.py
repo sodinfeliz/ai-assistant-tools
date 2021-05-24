@@ -194,7 +194,8 @@ class palmGUI(QDialog):
             if ret == QMessageBox.Ok:
                 CLOSE_DISTANCE = 2 # unit: meter
                 mode = 'insert'
-                tree = spatial.cKDTree(self.view_canvas.get_palm_pos_list())
+                pos_current = (self.view_canvas.get_palm_pos_list() / self._factor).astype(int)
+                tree = spatial.cKDTree(pos_current)
                 pos_new = []
                 for x, y in palm_pos:
                     indices = tree.query_ball_point([[x,y]], r=int(CLOSE_DISTANCE/pixel_size))

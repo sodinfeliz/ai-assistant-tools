@@ -29,4 +29,3 @@ if __name__ == '__main__':
     dialog.setAttribute(Qt.WA_TranslucentBackground)
     dialog.show()
     sys.exit(app.exec())
-    
