@@ -4,9 +4,9 @@ from PyQt5.QtWidgets import *
 
 
 class ChangeSignal(QObject):
-    signal = pyqtSignal()
-    def emit_signal(self):
-        self.signal.emit()
+    signal = pyqtSignal(QRectF)
+    def emit_signal(self, obj):
+        self.signal.emit(obj)
 
 
 class DeleteSignal(QObject):
@@ -15,11 +15,18 @@ class DeleteSignal(QObject):
         self.signal.emit(obj)
 
 
+class MouseReleaseSignal(QObject):
+    signal = pyqtSignal()
+    def emit_signal(self):
+        self.signal.emit()
+
+
 class RectItemHandle(QGraphicsRectItem):
 
     defaultEdgeWidth = 30
     defaultColor = (15, 71, 180)
     selectedColor = (224, 24, 24)
+    minCreateSize = 10
     minSize = None
 
     handleTopLeft = 1
@@ -51,10 +58,11 @@ class RectItemHandle(QGraphicsRectItem):
         self.handleSelected = None
         self.mousePressPos = None
         self.mousePressRect = None
-        self.creating = False
-        self.item_changed_signal = ChangeSignal()
+        self.shape_changed_signal = ChangeSignal()
         self.item_delete_signal = DeleteSignal()
+        self.mouse_release_signal = MouseReleaseSignal()
         self.color = self.defaultColor
+        self.creating = True
 
         self.set_edge_width(zfactor)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
@@ -69,11 +77,10 @@ class RectItemHandle(QGraphicsRectItem):
                 return k
         return None
 
-    def mousePressEvent(self, mouseEvent):
+    def mousePressEvent(self, mouseEvent: QMouseEvent):
         """
         Executed when the mouse is pressed on the item.
         """
-        self.set_creating()
         if mouseEvent.modifiers() == Qt.ShiftModifier or self.creating:
             self.handleSelected = self.handleAt(mouseEvent.pos())
             self.mousePressPos = mouseEvent.pos()
@@ -81,7 +88,7 @@ class RectItemHandle(QGraphicsRectItem):
         elif mouseEvent.modifiers() == Qt.ControlModifier:
             return super().mousePressEvent(mouseEvent)
 
-    def mouseMoveEvent(self, mouseEvent):
+    def mouseMoveEvent(self, mouseEvent: QMouseEvent):
         """
         Executed when the mouse is being moved over the item while being pressed.
         """
@@ -90,20 +97,19 @@ class RectItemHandle(QGraphicsRectItem):
         elif mouseEvent.modifiers() == Qt.ControlModifier:
             return super().mouseMoveEvent(mouseEvent)
 
-    def mouseReleaseEvent(self, mouseEvent):
+    def mouseReleaseEvent(self, mouseEvent: QMouseEvent):
         """
         Executed when the mouse is released from the item.
         """
         o = self.handleSize + self.handleSpace
         x1, y1, x2, y2 = self.originRect().getCoords()
-        
-        if x2-x1 == 1 and y2-y1 == 1 and self.creating:
+
+        if (abs(x2-x1) < self.minCreateSize or \
+            abs(y2-y1) < self.minCreateSize) and self.creating:
             self.item_delete_signal.emit_signal(self)
         else:
-            if x1 > x2:
-                x1, x2 = x2, x1
-            if y1 > y2:
-                y1, y2 = y2, y1
+            if x1 > x2: x1, x2 = x2, x1
+            if y1 > y2: y1, y2 = y2, y1
             self.setRect(x1-o, y1-o, x2-x1+2*o, y2-y1+2*o)
             self.updateHandlesPos()
             self.handleSelected = None
@@ -112,7 +118,17 @@ class RectItemHandle(QGraphicsRectItem):
             self.update()
 
         self.creating = False
+        self.mouse_release_signal.emit_signal()
         super().mouseReleaseEvent(mouseEvent)
+
+    def sceneEvent(self, event: QEvent) -> bool:
+        if event.type() == QEvent.GraphicsSceneMousePress:
+            self.mousePressEvent(event)
+        elif event.type() == QEvent.GraphicsSceneMouseMove:
+            self.mouseMoveEvent(event)
+        elif event.type() == QEvent.GraphicsSceneMouseRelease:
+            self.mouseReleaseEvent(event)
+        return True
 
     def originRect(self):
         """
@@ -132,79 +148,35 @@ class RectItemHandle(QGraphicsRectItem):
         self.handles[self.handleBottomLeft] = QRectF(b.left(), b.bottom() - s, s, s)
         self.handles[self.handleBottomRight] = QRectF(b.right() - s, b.bottom() - s, s, s)
 
-    def interactiveResize(self, mousePos):
+    def interactiveResize(self, mousePos: QPoint):
         """
         Perform shape interactive resize.
         """
-        offset = self.handleSize + self.handleSpace
-        boundingRect = self.rect()
-
         self.prepareGeometryChange()
+        boundingRect = self.rect()
+        shift = mousePos - self.mousePressPos
 
         if self.handleSelected == self.handleTopLeft:
-
-            fromX = self.mousePressRect.left()
-            fromY = self.mousePressRect.top()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            boundingRect.setLeft(toX)
-            boundingRect.setTop(toY)
-            self.setRect(boundingRect)
-
+            boundingRect.setTopLeft(self.mousePressRect.topLeft() + shift)
         elif self.handleSelected == self.handleTopRight:
-
-            fromX = self.mousePressRect.right()
-            fromY = self.mousePressRect.top()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            boundingRect.setRight(toX)
-            boundingRect.setTop(toY)
-            self.setRect(boundingRect)
-
+            boundingRect.setTopRight(self.mousePressRect.topRight() + shift)
         elif self.handleSelected == self.handleBottomLeft:
-
-            fromX = self.mousePressRect.left()
-            fromY = self.mousePressRect.bottom()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            boundingRect.setLeft(toX)
-            boundingRect.setBottom(toY)
-            self.setRect(boundingRect)
-
+            boundingRect.setBottomLeft(self.mousePressRect.bottomLeft() + shift)
         elif self.handleSelected == self.handleBottomRight:
-
-            fromX = self.mousePressRect.right()
-            fromY = self.mousePressRect.bottom()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            boundingRect.setRight(toX)
-            boundingRect.setBottom(toY)
-            self.setRect(boundingRect)
-
+            boundingRect.setBottomRight(self.mousePressRect.bottomRight() + shift)
         else:
-            fromL = self.mousePressRect.left()
-            fromT = self.mousePressRect.top()
-            fromR = self.mousePressRect.right()
-            fromB = self.mousePressRect.bottom()
-            toL = fromL + mousePos.x() - self.mousePressPos.x()
-            toT = fromT + mousePos.y() - self.mousePressPos.y()
-            toR = fromR + mousePos.x() - self.mousePressPos.x()
-            toB = fromB + mousePos.y() - self.mousePressPos.y()
-            boundingRect.setLeft(toL)
-            boundingRect.setTop(toT)
-            boundingRect.setRight(toR)
-            boundingRect.setBottom(toB)
-            self.setRect(boundingRect)
+            boundingRect.moveTo(self.mousePressRect.topLeft() + shift)
+        self.setRect(boundingRect)
 
         if self.__class__.minSize is not None:
-            if abs(boundingRect.width()) < self.__class__.minSize or \
-               abs(boundingRect.height()) < self.__class__.minSize:
+            if abs(boundingRect.width() - self.handleSize) < self.__class__.minSize or \
+               abs(boundingRect.height() - self.handleSize) < self.__class__.minSize:
                 self.switch_color('selected')
             else:
                 self.switch_color('default')
 
         self.updateHandlesPos()
-        self.item_changed_signal.emit_signal()
+        self.shape_changed_signal.emit_signal(self.originRect())
 
     def shape(self):
         """
@@ -214,7 +186,7 @@ class RectItemHandle(QGraphicsRectItem):
         path.addRect(self.rect())
         return path
 
-    def paint(self, painter, option, widget=None):
+    def paint(self, painter: QPainter, option, widget=None):
         """
         Paint the node in the graphic view.
         """
@@ -222,14 +194,12 @@ class RectItemHandle(QGraphicsRectItem):
         painter.setPen(QPen(QColor(*self.color, 200), self.edge_width, style=Qt.SolidLine, cap=Qt.RoundCap, join=Qt.RoundJoin))
         painter.drawRect(self.originRect())
 
-    def set_creating(self):
-        self.creating = self.width == 1 and self.height == 1
-
-    def set_edge_width(self, zfactor):
+    def set_edge_width(self, zfactor: float):
         new_width = self.__class__.defaultEdgeWidth / (1.2**zfactor)
         self.edge_width = 1 if new_width < 1 else int(new_width)
 
-    def switch_color(self, mode):
+    def switch_color(self, mode: str):
+        assert mode in ['default', 'selected']
         if mode == 'default':
             self.color = self.defaultColor
         elif mode == 'selected':
@@ -237,13 +207,13 @@ class RectItemHandle(QGraphicsRectItem):
         self.update()
 
     @classmethod
-    def set_min_size(cls, sz):
+    def set_min_size(cls, sz: int):
         cls.minSize = sz
 
     @property
     def width(self):
-        return self.originRect().width()
+        return int(self.originRect().width())
 
     @property
     def height(self):
-        return self.originRect().height()
+        return int(self.originRect().height())

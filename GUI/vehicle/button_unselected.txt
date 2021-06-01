@@ -1,9 +1,0 @@
-QPushButton {
-	border: None;
-	border-radius: 5px;
-	background-color: #F2F5FB;
-}
-QPushButton:pressed{
-	margin: 1 1 1 1;
-	outline: 0;
-}

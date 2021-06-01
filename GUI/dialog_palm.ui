@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1141</width>
-    <height>767</height>
+    <width>1092</width>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,9 @@
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <property name="leftMargin">
@@ -69,210 +72,6 @@ background-color: white;</string>
         <property name="horizontalSpacing">
          <number>7</number>
         </property>
-        <item row="0" column="4">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="10">
-         <widget class="QPushButton" name="pb_save_csv">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>75</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Tw Cen MT Condensed</family>
-            <pointsize>11</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	background-color: #0055D2;
-	color: #F7F9FF;
-	border: 2px solid white;
-	border-radius: 10px;
-	padding-bottom: 2px;
-}
-QPushButton:pressed {
-	margin: 1 1 1 1;
-}</string>
-          </property>
-          <property name="text">
-           <string>SAVE CSV</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="pb_loadcsv">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>21</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>21</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Tw Cen MT Condensed</family>
-            <pointsize>10</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	background-color: rgba(0,0,0,0);
-	border: none;
-}
-QPushButton:pressed{
-	margin: 1 1 1 1;
-	outline: 0;
-}
-</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../GUIImg/placeholder2.png</normaloff>../../GUIImg/placeholder2.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="5">
-         <widget class="QLineEdit" name="le_crop_size_2">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>100</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Tw Cen MT</family>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLineEdit {
-	border: 2px solid white;
-	border-radius: 10px;
-	background-color: #F1F1F1;
-	padding-bottom: 1px;
-}</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="placeholderText">
-           <string>Resolution</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QPushButton" name="pb_openfile">
-          <property name="minimumSize">
-           <size>
-            <width>21</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>21</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Tw Cen MT Condensed</family>
-            <pointsize>12</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	background-color: rgba(0,0,0,0);
-	border: none;
-}
-QPushButton:pressed{
-	margin: 1 1 1 1;
-	outline: 0;
-}
-
-
-</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../GUIImg/insert-picture-icon2.png</normaloff>../../GUIImg/insert-picture-icon2.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="3">
          <widget class="QPushButton" name="pb_save_dataset">
           <property name="enabled">
@@ -312,7 +111,7 @@ QPushButton:pressed{
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../GUIImg/pb-save-hover.png</normaloff>../../GUIImg/pb-save-hover.png</iconset>
+            <normaloff>../GUIImg/pb-save-hover.png</normaloff>../GUIImg/pb-save-hover.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -408,59 +207,6 @@ QPushButton:pressed {
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="pb_leave">
-          <property name="minimumSize">
-           <size>
-            <width>21</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>21</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Tw Cen MT Condensed</family>
-            <pointsize>12</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
-	background-color: rgba(0,0,0,0);
-	border: none;
-}
-QPushButton:pressed{
-	margin: 1 1 1 1;
-	outline: 0;
-}
-
-
-</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../GUIImg/exit3.png</normaloff>../../GUIImg/exit3.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>20</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="6">
          <widget class="QLineEdit" name="le_crop_size">
           <property name="enabled">
@@ -503,6 +249,59 @@ QPushButton:pressed{
           </property>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="pb_leave">
+          <property name="minimumSize">
+           <size>
+            <width>21</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>21</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Tw Cen MT Condensed</family>
+            <pointsize>12</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	background-color: rgba(0,0,0,0);
+	border: none;
+}
+QPushButton:pressed{
+	margin: 1 1 1 1;
+	outline: 0;
+}
+
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../GUIImg/exit.png</normaloff>../GUIImg/exit.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="9">
          <widget class="QLabel" name="info_display">
           <property name="minimumSize">
@@ -534,6 +333,210 @@ padding-bottom: 1px;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="pb_openfile">
+          <property name="minimumSize">
+           <size>
+            <width>21</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>21</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Tw Cen MT Condensed</family>
+            <pointsize>12</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	background-color: rgba(0,0,0,0);
+	border: none;
+}
+QPushButton:pressed{
+	margin: 1 1 1 1;
+	outline: 0;
+}
+
+
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../GUIImg/image.png</normaloff>../GUIImg/image.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QLineEdit" name="le_crop_size_2">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Tw Cen MT</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLineEdit {
+	border: 2px solid white;
+	border-radius: 10px;
+	background-color: #F1F1F1;
+	padding-bottom: 1px;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="placeholderText">
+           <string>Resolution</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="pb_loadcsv">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>21</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>21</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Tw Cen MT Condensed</family>
+            <pointsize>10</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	background-color: rgba(0,0,0,0);
+	border: none;
+}
+QPushButton:pressed{
+	margin: 1 1 1 1;
+	outline: 0;
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../GUIImg/placeholder.png</normaloff>../GUIImg/placeholder.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="10">
+         <widget class="QPushButton" name="pb_save_csv">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>75</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Tw Cen MT Condensed</family>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	background-color: #0055D2;
+	color: #F7F9FF;
+	border: 2px solid white;
+	border-radius: 10px;
+	padding-bottom: 2px;
+}
+QPushButton:pressed {
+	margin: 1 1 1 1;
+}</string>
+          </property>
+          <property name="text">
+           <string>SAVE CSV</string>
           </property>
          </widget>
         </item>
@@ -573,25 +576,25 @@ padding-bottom: 1px;</string>
              <string notr="true">QPushButton {
 	border: 2px solid rgba(0, 85, 210, 0.8);
 	border-radius: 5px;
-	background-color: rgba(154, 186, 250, .4);
+	background-color: rgba(154, 186, 250, .35);
 }
+
 QPushButton:pressed{
 	margin: 1 1 1 1;
 	outline: 0;
-}
-</string>
+}</string>
             </property>
             <property name="text">
              <string/>
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../GUIImg/cursor2.png</normaloff>../../GUIImg/cursor2.png</iconset>
+              <normaloff>../GUIImg/click.png</normaloff>../GUIImg/click.png</iconset>
             </property>
             <property name="iconSize">
              <size>
-              <width>25</width>
-              <height>25</height>
+              <width>26</width>
+              <height>26</height>
              </size>
             </property>
            </widget>
@@ -632,7 +635,7 @@ QPushButton:hover {
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../GUIImg/bnbox2.png</normaloff>../../GUIImg/bnbox2.png</iconset>
+              <normaloff>../GUIImg/bnbox.png</normaloff>../GUIImg/bnbox.png</iconset>
             </property>
             <property name="iconSize">
              <size>

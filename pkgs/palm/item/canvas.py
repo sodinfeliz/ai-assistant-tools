@@ -1,11 +1,15 @@
 import math
+from typing import cast
 import numpy as np
+from decouple import config
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from scipy.spatial.distance import cdist
 
 from .circle import PosCircleItem
+from .rect_handle import RectItemHandle
+from ..utils.qtutils import dist_pts, qpointf_to_list
 
 
 func_mode = {
@@ -16,6 +20,7 @@ func_mode = {
 
 class PhotoViewer(QGraphicsView):
 
+    zoom_factor = 1.25
     zoom_signal = pyqtSignal()
 
     def __init__(self, parent=None):
@@ -37,7 +42,7 @@ class PhotoViewer(QGraphicsView):
     def hasPhoto(self):
         return not self._empty
 
-    def fitInView(self, scale=True):
+    def fitInView(self):
         rect = QRectF(self._photo.pixmap().rect())
         if not rect.isNull():
             self.setSceneRect(rect)
@@ -49,8 +54,8 @@ class PhotoViewer(QGraphicsView):
                 scenerect = self.transform().mapRect(rect)
                 factor = max(viewrect.width() / scenerect.width(),
                              viewrect.height() / scenerect.height())
+                factor *= self.__class__.zoom_factor**self._zoom
                 self.scale(factor, factor)
-            self._zoom = 0
 
     def setPhoto(self, back_im: np.ndarray=None):
         height, width, chnum = back_im.shape
@@ -72,17 +77,13 @@ class PhotoViewer(QGraphicsView):
 
     def zoom_in(self):
         if self.hasPhoto():
-            factor = 1.25
+            factor = self.__class__.zoom_factor
             self._zoom += 1
-            if self._zoom > 0:
-                self.scale(factor, factor)
-            else:
-                self._zoom = 0
-                self.fitInView()
+            self.scale(factor, factor)
 
     def zoom_out(self):
         if self.hasPhoto():
-            factor = 0.8
+            factor = 1 / self.__class__.zoom_factor
             self._zoom -= 1
             if self._zoom > 0:
                 self.scale(factor, factor)
@@ -108,43 +109,45 @@ class PhotoViewer(QGraphicsView):
 
 class PalmPositionCanvas(PhotoViewer):
 
-    add_item_signal = pyqtSignal(QPointF)
-    delete_item_signal = pyqtSignal()
+    add_win_signal = pyqtSignal(QPointF)
+    add_pos_signal = pyqtSignal()
 
     def __init__(self, parent, geometry: QRect):
         super(PalmPositionCanvas, self).__init__(parent)
         self.setStyleSheet("background-color: #EDF3FF; border-radius: 7px; border: None;")
         self.setGeometry(geometry)
 
-        self.palm_pos_items = []
-        self.crop_win_items = []
+        self.pos_group = self._scene.createItemGroup(list())
+        self.win_group = self._scene.createItemGroup(list())
 
         self._mode = func_mode['select']
         self._factor = 1.
+        self._pixel_size = 1.
         self._add_point = False
 
-    def mousePressEvent(self, mouseEvent):     
+    def mousePressEvent(self, mouseEvent: QMouseEvent):
+        # view_rect = self.geometry()
+        # lt_pt = self.mapToScene(0, 0)
+        # print(f'Left Top: {lt_pt.x()}')
+        # print(f'Right Bottom: {self.mapToScene(view_rect.width(), view_rect.height())}')
+
         if self.get_mode() == func_mode['crop']:
             # Shift + Right: Remove the crop window.
             # Press + Left : Create new crop window.
+            mouse_pos = self.mapToScene(mouseEvent.pos())
             if mouseEvent.modifiers() == Qt.ShiftModifier and mouseEvent.buttons() == Qt.RightButton:
-                mousePos = self.mapToScene(mouseEvent.pos())
-                cindex = self._closeast_crop_win(mousePos)
-                if cindex is not None:
-                    self._scene.removeItem(self.crop_win_items[cindex])
-                    del self.crop_win_items[cindex]
-                    self.delete_item_signal.emit()
+                self._delete_closeast_crop_win(mouse_pos)
             elif mouseEvent.buttons() == Qt.LeftButton and mouseEvent.modifiers() == Qt.NoModifier:
-                self.add_item_signal.emit(self.mapToScene(mouseEvent.pos()))
+                self.add_win_signal.emit(mouse_pos)
         
         super().mousePressEvent(mouseEvent)
 
-    def mouseDoubleClickEvent(self, mouseEvent):
+    def mouseDoubleClickEvent(self, mouseEvent: QMouseEvent):
         if self.get_mode() == func_mode['select'] and self._add_point:    
             self._add_remove_pos_in_canvas(mouseEvent.pos())
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        self.mouse_pos = event.pos()
+        self.mouse_pos = event.pos() # tracking for key press event
         return super().mouseMoveEvent(event)
 
     def keyPressEvent(self, keyEvent: QKeyEvent) -> None:
@@ -152,22 +155,26 @@ class PalmPositionCanvas(PhotoViewer):
            self._add_point and keyEvent.key() == Qt.Key_Space:
             self._add_remove_pos_in_canvas(self.mouse_pos)
 
-    def add_item_to_scene(self, it):
+    def add_item_to_scene(self, it: QGraphicsItem):
         self._scene.addItem(it)
-        return it
 
-    def remove_item_from_scene(self, it):
+    def remove_item_from_scene(self, it: QGraphicsItem):
         self._scene.removeItem(it)
 
-    def set_factor(self, factor):
+    def set_factor(self, factor: float):
         self._factor = factor
 
-    def set_mode(self, mode):
+    def set_pixel_size(self, pixel_size: float):
+        self._pixel_size = pixel_size
+
+    def set_mode(self, mode: str):
         self._mode = mode
         if mode == func_mode['select']:
             self._add_point = True
+            PosCircleItem.set_changeable(True)
         elif mode == func_mode['crop']:
             self._add_point = False
+            PosCircleItem.set_changeable(False)
 
     def get_mode(self) -> int:
         """Return the mode value
@@ -180,96 +187,80 @@ class PalmPositionCanvas(PhotoViewer):
     #  Position Items related
     ###############################
 
-    def clean_all_pos_items(self):
-        for it in self.palm_pos_items:
-            self.remove_item_from_scene(it)
-        self.palm_pos_items = []
+    def clean_pos_items(self):
+        self._scene.removeItem(self.pos_group)
+        self.pos_group = self._scene.createItemGroup(list())
 
     def palm_pos_data_loading(self, positions: np.ndarray, mode: str='insert'):
         assert mode in ['insert', 'override']
-        if mode == 'override':
-            self.clean_all_pos_items()
+        if mode == 'override': self.clean_pos_items()
 
         for pos in positions:
             x, y = (pos*self._factor).astype(int)
-            self.palm_pos_items.append(self.add_item_to_scene(PosCircleItem(x, y, 'red'))) 
+            self.pos_group.addToGroup(PosCircleItem(QPoint(x, y)))
 
         self._add_point = True
 
-    def set_add_point(self, mode):
+    def set_add_point(self, mode: bool):
         self._add_point = mode
 
-    def get_palm_pos_list(self) -> np.ndarray:
-        pos = [it.center_pt for it in self.palm_pos_items]
-        return np.array(pos)
+    def get_palm_pos_data(self) -> np.ndarray:
+        return np.array([qpointf_to_list(it.rect().center()) for it in self.pos_group.childItems()])
 
-    def _add_remove_pos_in_canvas(self, mouse_pos):
+    def get_palm_radius_data(self) -> np.ndarray:
+        return np.array([it.radius for it in self.pos_group.childItems()])
+
+    def _add_remove_pos_in_canvas(self, mouse_pos: QPoint):
         pos = self.mapToScene(mouse_pos)
-        pos = self._qpointf_to_list(pos)
-        dist = None if self.no_pts else cdist([pos], self.get_palm_pos_list())
-        self.add_item_signal.emit(QPointF(*pos))
+        self.add_pos_signal.emit()
+
+        dc, ic = np.Inf, None
+        for it in self.pos_group.childItems():
+            dist = dist_pts(it.rect().center(), pos)
+            if dist < dc: dc, ic = dist, it
         
-        if not self.no_pts and dist.min() <= 30 * self._factor:
-            index = dist.argmin()
-            self._scene.removeItem(self.palm_pos_items[index])
-            del self.palm_pos_items[index]
+        if dc <= config('CLOSE_DIST_IN_CANVAS', cast=float) / self._pixel_size * self._factor:
+            self._scene.removeItem(ic)
         else:
-            circle = PosCircleItem(*pos, 'red')
-            self.palm_pos_items.append(self.add_item_to_scene(circle))
+            circle = PosCircleItem(pos)
+            self.pos_group.addToGroup(circle)
             
     @property
-    def no_pts(self):
-        return len(self.palm_pos_items) == 0
+    def no_pts(self) -> bool:
+        return len(self.pos_group.childItems()) == 0
 
     ###############################
     #  Crop Windows related
     ###############################
 
-    def add_crop_win_to_scene(self, it):
-        self.add_item_to_scene(it)
-        self.crop_win_items.append(it)
+    def add_crop_win_to_scene(self, it: RectItemHandle):
+        it.item_delete_signal.signal.connect(self.remove_item_from_scene)
+        self.win_group.addToGroup(it)
 
-    def delete_all_crop_win(self):
-        """ Removing all 'crop_win_items' objects from scene """
-        for it in self.crop_win_items:
-            self.remove_item_from_scene(it)
-        self.crop_win_items = []
-        self.delete_item_signal.emit()
+    def clean_win_items(self):
+        """ Removing all 'RectItemHandle' objects from scene """
+        self._scene.removeItem(self.win_group)
+        self.win_group = self._scene.createItemGroup(list())
 
     def get_all_crop_win(self) -> np.ndarray:
         """ Return all `crop_win` coordinates. """
         windows = []
-        for rects in self.crop_win_items:
+        for rects in self.win_group.childItems():
             windows.append(list(map(int, rects.originRect().getCoords())))
         return np.array(windows)
 
-    def _closeast_crop_win(self, pos: QPointF) -> int:
+    def _delete_closeast_crop_win(self, pos: QPointF):
         """ Return the most close `crop_win` to `pos` """
-        def dist_pts(a: QPointF, b: QPointF) -> float:
-            return math.sqrt((a.x()-b.x())**2 + (a.y()-b.y())**2)
-
         cdist = np.inf # candidate distance
-        cindex = None  # candidate index
+        citem = None  # candidate index
 
-        for idx, it in enumerate(self.crop_win_items):
+        for it in self.win_group.childItems():
             rect = it.originRect()
             if not rect.contains(pos): continue
             cx = rect.x() + rect.width() // 2
             cy = rect.y() + rect.height() // 2
             dist = dist_pts(pos, QPointF(cx, cy))
             if dist < cdist:
-                cdist, cindex = dist, idx
+                cdist, citem = dist, it
 
-        return cindex
-
-    ###############################
-    #  Others
-    ###############################
-
-    def _qpointf_to_list(self, pt: QPointF, dtype=float):
-        if dtype is int:
-            return [pt.x(), pt.y()]
-        elif dtype is float:
-            return [round(pt.x()), round(pt.y())]
-        else:
-            raise TypeError("Unsupported dtype.")
+        if citem is not None: self._scene.removeItem(citem)

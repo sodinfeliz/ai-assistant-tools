@@ -1,12 +1,10 @@
 import sys
 import signal
-import sys
-import signal
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from pkgs.palm.palm_gui import palmGUI
+from .palm_gui import palmGUI
 
 app = None
 
