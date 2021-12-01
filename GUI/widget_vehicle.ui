@@ -88,7 +88,7 @@ QPushButton:pressed {
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../../GUIImg/exit.png</normaloff>../../GUIImg/exit.png</iconset>
+       <normaloff>../GUIImg/exit.png</normaloff>../GUIImg/exit.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -124,7 +124,7 @@ QPushButton:pressed {
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../../GUIImg/pb-repeat.png</normaloff>../../GUIImg/pb-repeat.png</iconset>
+       <normaloff>../GUIImg/pb-repeat.png</normaloff>../GUIImg/pb-repeat.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -169,7 +169,7 @@ QPushButton:pressed{
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../../GUIImg/pb-computer-folder.png</normaloff>../../GUIImg/pb-computer-folder.png</iconset>
+       <normaloff>../GUIImg/pb-computer-folder.png</normaloff>../GUIImg/pb-computer-folder.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -212,7 +212,7 @@ QPushButton:pressed{
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../../GUIImg/pb-save.png</normaloff>../../GUIImg/pb-save.png</iconset>
+       <normaloff>../GUIImg/pb-save.png</normaloff>../GUIImg/pb-save.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -247,7 +247,7 @@ QPushButton:pressed{
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../GUIImg/bnbox.png</normaloff>../../GUIImg/bnbox.png</iconset>
+      <normaloff>../GUIImg/bnbox.png</normaloff>../GUIImg/bnbox.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -281,7 +281,7 @@ QPushButton:pressed{
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../GUIImg/segment.png</normaloff>../../GUIImg/segment.png</iconset>
+      <normaloff>../GUIImg/segment.png</normaloff>../GUIImg/segment.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -318,7 +318,7 @@ QPushButton:pressed{
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../GUIImg/box.png</normaloff>../../GUIImg/box.png</iconset>
+      <normaloff>../GUIImg/box.png</normaloff>../GUIImg/box.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -624,7 +624,7 @@ QPushButton:pressed{
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../../GUIImg/add.png</normaloff>../../GUIImg/add.png</iconset>
+        <normaloff>../GUIImg/plus-symbol-in-a-rounded-black-square.png</normaloff>../GUIImg/plus-symbol-in-a-rounded-black-square.png</iconset>
       </property>
       <property name="iconSize">
        <size>

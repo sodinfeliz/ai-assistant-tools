@@ -1,14 +1,10 @@
-import os
-import sys
 import cv2
-import random
 import shutil
 import numpy as np
 import xml.etree.ElementTree as ET
 from pascal_voc_writer import Writer
 from glob import glob
 from pathlib import Path
-from progress.bar import Bar
 
 
 def _dir_create(path, delete=False):
