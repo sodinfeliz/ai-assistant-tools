@@ -1,0 +1,46 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>add.png</file>
+    <file>back.png</file>
+    <file>block.png</file>
+    <file>bnbox.png</file>
+    <file>bnbox_white.png</file>
+    <file>bnbox2.png</file>
+    <file>box.png</file>
+    <file>box_white.png</file>
+    <file>box2.png</file>
+    <file>car.png</file>
+    <file>click.png</file>
+    <file>direct-download.png</file>
+    <file>downarrow.png</file>
+    <file>down-arrow.png</file>
+    <file>exit.png</file>
+    <file>exit3.png</file>
+    <file>hexagonal.png</file>
+    <file>icon_car.png</file>
+    <file>icon_crop.png</file>
+    <file>icon_palm.png</file>
+    <file>image.png</file>
+    <file>insert-picture-icon.png</file>
+    <file>insert-picture-icon2.png</file>
+    <file>palm-tree.png</file>
+    <file>pb-arrow-left.png</file>
+    <file>pb-arrow-left-hover.png</file>
+    <file>pb-arrow-right.png</file>
+    <file>pb-arrow-right-hover.png</file>
+    <file>pb-computer-folder.png</file>
+    <file>pb-computer-folder-hover.png</file>
+    <file>pb-home.png</file>
+    <file>pb-home-hover.png</file>
+    <file>pb-repeat.png</file>
+    <file>pb-repeat-hover.png</file>
+    <file>pb-save.png</file>
+    <file>pb-save-hover.png</file>
+    <file>photo.png</file>
+    <file>placeholder.png</file>
+    <file>placeholder2.png</file>
+    <file>plus-symbol-in-a-rounded-black-square.png</file>
+    <file>segment.png</file>
+    <file>wheat.png</file>
+  </qresource>
+</RCC>

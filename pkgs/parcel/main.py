@@ -54,7 +54,7 @@ class SaveWorker(QObject):
 class parcelGUI(QDialog):
     def __init__(self, parent=None):
         super(parcelGUI, self).__init__(parent)
-        loadUi('GUI/parcel/dialog_parcel.ui', self)
+        loadUi('GUI/dialog_parcel.ui', self)
 
         # canvas initialization
         self.view_canvas = ParcelCanvas(self, QRect(0, 0, 10, 10))

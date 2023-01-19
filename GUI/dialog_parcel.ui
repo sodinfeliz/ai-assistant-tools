@@ -87,8 +87,8 @@ QSlider::groove:horizontal {
 }
 
 QSlider::handle:horizontal { 
-	background-color: #4B7CE1; 
-	border: 2px solid #4B7CE1; 
+	background-color: #0055D2; 
+	border: 2px solid #0055D2; 
 	width: 14px; 
 	height: 18px; 
 	line-height: 18px; 
@@ -442,8 +442,8 @@ QSlider::groove:horizontal {
 }
 
 QSlider::handle:horizontal { 
-	background-color: #4B7CE1; 
-	border: 2px solid #4B7CE1; 
+	background-color: #0055D2; 
+	border: 2px solid #0055D2; 
 	width: 14px; 
 	height: 18px; 
 	line-height: 18px; 
@@ -541,7 +541,7 @@ QSlider::handle:horizontal {
           </property>
           <property name="styleSheet">
            <string notr="true">QPushButton {
-	background-color: #4B7CE1;
+	background-color: #0055D2;
 	color: #F7F9FF;
 	border: 2px solid white;
 	border-radius: 10px;
